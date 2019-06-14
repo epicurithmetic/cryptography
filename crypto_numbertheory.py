@@ -196,7 +196,8 @@ def hex_to_decimal(hexstring):
 # This function turns binary (type str) into hexadecimal (type str).
 def binary_to_hex(binarystring):
 
-    """ This function inputs binary (type str) and out puts the hexadecimal
+    """
+        This function inputs binary (type str) and out puts the hexadecimal
         representation (type str)
     """
 

@@ -305,11 +305,22 @@ def XOR_encryption(plaintext, key):
     # With the key the appropiate length, we can now XOR the plaintext with key.
     ciphertext_ASCII = [x^y for x,y in zip(plaintext,key)]
     ciphertext_binary = [decimal_to_binary(x) for x in ciphertext_ASCII]
-    ciphertext_hex = [binary_to_hex(x) for x in ciphertext_binary]
 
-    ciphertext = ''
-    for x in ciphertext_hex:
-        ciphertext += x
+    # Something needs to be done...
+    for i in range(1, len(ciphertext_binary)):
+        l_buff = 8 - len(ciphertext_binary[i])
+        buff = '0'*l_buff
+        ciphertext_binary[i] = buff + ciphertext_binary[i]
+
+    # Now the ciphertext is in bytes. So we make one binary number for the
+    # entire ciphertext.
+    ciphertext_binary_string = ''
+    for i in ciphertext_binary:
+        ciphertext_binary_string += i
+
+    # Now we want convert the ciphertext into HEX for printing.
+    ciphertext_decimal_string = binary_to_decimal(ciphertext_binary_string)
+    ciphertext = decimal_to_hex(ciphertext_decimal_string)
 
     return ciphertext
 
