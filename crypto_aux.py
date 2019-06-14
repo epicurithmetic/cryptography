@@ -5,6 +5,10 @@ from crypto_numbertheory import *
 #                       Bits n Bytes of Information
 # ---------------------------------------------------------------------------
 
+# NOTE:
+#       Always operate on raw bytes, never on encoded strings.
+#       Only use hex and base64 for pretty-printing.
+
 # This function takes plaintext (type str) and outputs the list of bytes
 # which encode that plaintext (type str) i.e. list of binary bytes.
 def text_to_bytes(plaintext):
@@ -35,7 +39,7 @@ def text_to_bytes(plaintext):
 
     return plaintext_binary
 
-# This function takes plaintext and returns a list of the individual bits
+# This function takes plaintext and returns a list of the individual bits.
 def text_to_bits(plaintext):
 
     """
@@ -55,6 +59,62 @@ def text_to_bits(plaintext):
         plaintext_bits = plaintext_bits + string
 
     return plaintext_bits
+
+# The following functions allow us to go to and from a binary string to
+# the corresponding collection of 8-bit bytes.
+
+def binary_to_bytes(binary_string):
+
+    '''
+        Input: binary string (type string)
+        Output: list of 8-bit bytes (type list)
+
+        This function returns the collection of 8-bit bytes of a given
+        binary string.
+
+        The collection of bytes is from the right. Imagine the binary string
+        being feed into a reader-head from the left. This is the convention
+        used throughout these files.
+
+    '''
+
+    binary_list = list(binary_string)
+    length_binary = len(binary_list)
+    binary_list.reverse()
+
+    # The binary string may not have length divisible by 8. So we may have
+    # to pad accordingly.
+    fullbytes = (length_binary / 8)
+    #remainder = length_cipher_bin % 8
+
+    bytes = []
+
+    for i in range(0,fullbytes):
+        byte = binary_list[(8*i) : ((8*i)+8)]
+        bytes.append(byte)
+    bytes.append(binary_list[fullbytes*8 : ])
+    bytes.reverse()
+
+    # Each byte is a list at the moment. We now turn them into strings.
+    bytes_string = []
+    for byte in bytes:
+        byte.reverse()
+        str_byte = ''
+        for i in byte:
+            str_byte = str_byte + i
+        bytes_string.append(str_byte)
+
+    return bytes_string
+
+def hex_to_bytes(hex_string):
+
+    '''
+        Input: hex string (type string)
+        Output: list of bytes of the hex string (type string)
+
+    '''
+
+    return binary_to_bytes((hex_to_binary(hex_string)))
 
 # ---------------------------------------------------------------------------
 #                           Hamming Distance
@@ -158,3 +218,90 @@ def hex_XOR(hex_string1, hex_string2):
     hex_XOR_string = decimal_to_hex(deci_XOR)
 
     return hex_XOR_string
+
+# ---------------------------------------------------------------------------
+#                        English Detection Functions
+# ---------------------------------------------------------------------------
+
+# There are a number of ways to detect whether a given piece of text is
+# actually english and not gibberish. First, one could simply count the number
+# of instances of common english words:
+
+def is_english_wordfreq(ct):
+
+    '''
+        Input: a list of integers (ASCII encoded characters)
+
+        Output: Boolean (True, if enough english words counted)
+
+        This function uses the following common words:
+
+        common words = ['the', 'be ', 'to ', 'of ', 'and', 'for', 'in ', 'not',
+                        'you', ' a ']
+
+        In order to determine whether or not the sentence is english. Notice
+        we make all of these strings length three with spaces in order
+        to get around the obstacle of looking for different length words.
+        Looking for words of different lengths would require multiple loops.
+
+    '''
+
+    # We will count the number of instances of the following words.
+    # We need to calibrate the threshold for "is english" depending
+    # upon the length of the text.
+    count = 0
+    common_words = ['the', 'be ', 'to ', 'of ', 'and', 'for', 'in ', 'not',
+                    'you', ' a ']
+
+    # We loop through the text looking for any instance of the these
+    # three character words. Increasing our count whenever one is found.
+    for i in range(len(ct)-2):
+        if chr(ct[i])+chr(ct[i+1])+chr(ct[i+2]) in common_words:
+            count+=1
+
+    # This next statement dictates the number of instances required to
+    # determine whether the sentence is English. In long texts one might
+    # expect some words to arise by chance in gibberish, so the count
+    # should be higher for longe texts. Smaller for shorter texts.
+    if count > 0:
+        return True
+    else:
+        return False
+
+# ---------------------------------------------------------------------------
+#                         Decipher XOR Encryption
+# ---------------------------------------------------------------------------
+
+def one_character_XOR_decipher(cipher_text):
+
+
+    '''
+        Input: Type list of integers. This function takes the cipher text after
+               it has been put into bytes and then turned into the corresponding
+               integers.
+
+        Output: Plaintext message and the key.
+
+    '''
+
+    l_cipher = len(cipher_text)
+
+    # This lists all possible single character keys.
+    keys = [chr(x) for x in range(0,128)]
+
+    for key in keys:
+
+        plain_text_candidate = []
+
+        for i in range(0, l_cipher):
+            plain_text_candidate.append(cipher_text[i] ^ ord(key))
+
+        if is_english_wordfreq(plain_text_candidate) == True:
+            readable_message = ''
+            for x in plain_text_candidate:
+                readable_message += chr(x)
+
+            return "Key is: %s. \nPlaintext is: %s.\n" % (key,readable_message)
+            break
+        else:
+            pass
