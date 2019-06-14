@@ -92,11 +92,8 @@ for line in file_lines:
     line_deci = [binary_to_decimal(x) for x in line_bytes]
 
     if one_character_XOR_search_decipher(line_deci) == True:
-
         print "The text was on line %s." % str(file_lines.index(line) + 1)
-
         break
-
     else:
         pass
 
@@ -119,3 +116,17 @@ print 'Key: ICE'
 ciphertext_test = XOR_encryption(plaintext, 'ICE')
 goal = 'b3637272a2b2e63622c2e69692a23693a2a3c6324202d623d63343c2a26226324272765272a282b2f20430a652e2c652a3124333a653e2b2027630c692b20283165286326302e27282f'
 print ciphertext_test == goal
+
+# ---------------------------------------------------------------------------
+#                            Challenge 6
+# ---------------------------------------------------------------------------
+print '\n'
+print '-'*41
+print 'Challenge 6: Implement repeating-key XOR'
+print '-'*41
+print '\n'
+
+text1 = 'this is a test'
+text2 = 'wokka wokka!!!'
+print hamming_plaintext(text1, text2)
+# 37! Test passed.

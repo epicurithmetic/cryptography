@@ -147,6 +147,24 @@ def hamming_plaintext(text1,text2):
     else:
         return "Strings aren't the same length."
 
+def hamming_binary(binary1, binary2):
+
+    '''
+        Input: two binary strings.
+        Output: return Hamming distance between strings.
+
+    '''
+
+    binary1 = list(binary1)
+    binary2 = list(binary2)
+
+    XOR_binary = [((int(x)+int(y)) % 2) for x,y in zip(binary1, binary2)]
+
+    if len(binary1) == len(binary2):
+        return sum(XOR_binary)
+    else:
+        return 'Binary strings not equal length.'
+
 
 # ---------------------------------------------------------------------------
 #                               XOR Functions
@@ -226,7 +244,6 @@ def hex_XOR(hex_string1, hex_string2):
 # There are a number of ways to detect whether a given piece of text is
 # actually english and not gibberish. First, one could simply count the number
 # of instances of common english words:
-
 def is_english_wordfreq(ct):
 
     '''
@@ -268,7 +285,67 @@ def is_english_wordfreq(ct):
     else:
         return False
 
+# In order to break XOR (Vignere cipher) we need to break the cipher text
+# into blocks. Blocks which will not contain any words when decrypted.
+# Therefore we need another metric in order to detect english. For this we
+# will use letter frequency scores rather than word frequency.
+def is_english_letterfreq(ct):
 
+    """
+        This function takes in a string and assigns it a score based on the
+        frequency of the individual characters in the string. Higher scorer
+        should correspond to "more likely to be english".
+
+        It is intended that this function will be used to score a whole bunch of
+        of different texts, to help determine which of them is actually english.
+
+        It employs the following dictionary to obtain the scores for each pair:
+
+        letter_frequencies = {'e': 0.1202, 't': 0.0910, 'a': 0.0812, 'o': 0.0768,
+                              'i': 0.0731, 'n': 0.0695, 's': 0.0628, 'r': 0.0602,
+                              'h': 0.0592, 'd': 0.0432, ' ': 0.2918,
+                              'l': 0.0398, 'u': 0.0288, 'c': 0.0271, 'm': 0.0261,
+                              'f': 0.0230, 'y': 0.0211, 'w': 0.0209, 'g': 0.0203,
+                              'p': 0.0182, 'b': 0.0149, 'v': 0.0111, 'k': 0.0069,
+                              'x': 0.0017, 'q': 0.0011, 'j': 0.0010, 'z': 0.0007,
+                              'E': 0.1202, 'T': 0.0910, 'A': 0.0812, 'O': 0.0768,
+                              'I': 0.0731, 'N': 0.0695, 'S': 0.0628, 'R': 0.0602,
+                              'H': 0.0592, 'D': 0.0432,
+                              'L': 0.0398, 'U': 0.0288, 'C': 0.0271, 'M': 0.0261,
+                              'F': 0.0230, 'Y': 0.0211, 'W': 0.0209, 'G': 0.0203,
+                              'P': 0.0182, 'B': 0.0149, 'V': 0.0111, 'K': 0.0069,
+                              'X': 0.0017, 'Q': 0.0011, 'J': 0.0010, 'Z': 0.0007
+                              }
+        These frequencies were taken from wikipedia. 
+    """
+
+    letter_frequencies = {'e': 0.1202, 't': 0.0910, 'a': 0.0812, 'o': 0.0768,
+                          'i': 0.0731, 'n': 0.0695, 's': 0.0628, 'r': 0.0602,
+                          'h': 0.0592, 'd': 0.0432, ' ': 0.1918,
+                          'l': 0.0398, 'u': 0.0288, 'c': 0.0271, 'm': 0.0261,
+                          'f': 0.0230, 'y': 0.0211, 'w': 0.0209, 'g': 0.0203,
+                          'p': 0.0182, 'b': 0.0149, 'v': 0.0111, 'k': 0.0069,
+                          'x': 0.0017, 'q': 0.0011, 'j': 0.0010, 'z': 0.0007,
+                          'E': 0.1202, 'T': 0.0910, 'A': 0.0812, 'O': 0.0768,
+                          'I': 0.0731, 'N': 0.0695, 'S': 0.0628, 'R': 0.0602,
+                          'H': 0.0592, 'D': 0.0432,
+                          'L': 0.0398, 'U': 0.0288, 'C': 0.0271, 'M': 0.0261,
+                          'F': 0.0230, 'Y': 0.0211, 'W': 0.0209, 'G': 0.0203,
+                          'P': 0.0182, 'B': 0.0149, 'V': 0.0111, 'K': 0.0069,
+                          'X': 0.0017, 'Q': 0.0011, 'J': 0.0010, 'Z': 0.0007
+                          }
+
+
+    l = len(string)
+    score = 0
+    for i in range(0,l):
+
+        if string[i] in letter_frequencies:
+            score = score + letter_frequencies[string[i]]
+        else:
+            pass
+
+    return score
 
 # ---------------------------------------------------------------------------
 #                             XOR Encryption

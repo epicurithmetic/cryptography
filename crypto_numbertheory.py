@@ -357,6 +357,140 @@ def decimal_to_base64(n):
     else:
         return '/'
 
+# and back again
+def base64_to_decimal(n):
+    """ This function inputs n in base64 (type str) and returns the decimal
+        representation (type int)
+    """
+    if n == 'A':
+        return 0
+    elif n == 'B':
+        return 1
+    elif n == 'C':
+        return 2
+    elif n == 'D':
+        return 3
+    elif n == 'E':
+        return 4
+    elif n == 'F':
+        return 5
+    elif n == 'G':
+        return 6
+    elif n == 'H':
+        return 7
+    elif n == 'I':
+        return 8
+    elif n == 'J':
+        return 9
+    elif n == 'K':
+        return 10
+    elif n == 'L':
+        return 11
+    elif n == 'M':
+        return 12
+    elif n == 'N':
+        return 13
+    elif n == 'O':
+        return 14
+    elif n == 'P':
+        return 15
+    elif n == 'Q':
+        return 16
+    elif n == 'R':
+        return 17
+    elif n == 'S':
+        return 18
+    elif n == 'T':
+        return 19
+    elif n == 'U':
+        return 20
+    elif n == 'V':
+        return 21
+    elif n == 'W':
+        return 22
+    elif n == 'X':
+        return 23
+    elif n == 'Y':
+        return 24
+    elif n == 'Z':
+        return 25
+    elif n == 'a':
+        return 26
+    elif n == 'b':
+        return 27
+    elif n == 'c':
+        return 28
+    elif n == 'd':
+        return 29
+    elif n == 'e':
+        return 30
+    elif n == 'f':
+        return 31
+    elif n == 'g':
+        return 32
+    elif n == 'h':
+        return 33
+    elif n == 'i':
+        return 34
+    elif n == 'j':
+        return 35
+    elif n == 'k':
+        return 36
+    elif n == 'l':
+        return 37
+    elif n == 'm':
+        return 38
+    elif n == 'n':
+        return 39
+    elif n == 'o':
+        return 40
+    elif n == 'p':
+        return 41
+    elif n == 'q':
+        return 42
+    elif n == 'r':
+        return 43
+    elif n == 's':
+        return 44
+    elif n == 't':
+        return 45
+    elif n == 'u':
+        return 46
+    elif n == 'v':
+        return 47
+    elif n == 'w':
+        return 48
+    elif n == 'x':
+        return 49
+    elif n == 'y':
+        return 50
+    elif n == 'z':
+        return 51
+    elif n == '0':
+        return 52
+    elif n == '1':
+        return 53
+    elif n == '2':
+        return 54
+    elif n == '3':
+        return 55
+    elif n == '4':
+        return 56
+    elif n == '5':
+        return 57
+    elif n == '6':
+        return 58
+    elif n == '7':
+        return 59
+    elif n == '8':
+        return 60
+    elif n == '9':
+        return 61
+    elif n == '+':
+        return 62
+    else:
+        return 63
+
 # With the functions above we can write a function which turns hex to base64
 def hex_to_base64(hex_string):
 
