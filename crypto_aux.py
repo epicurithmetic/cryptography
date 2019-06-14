@@ -316,7 +316,7 @@ def is_english_letterfreq(ct):
                               'P': 0.0182, 'B': 0.0149, 'V': 0.0111, 'K': 0.0069,
                               'X': 0.0017, 'Q': 0.0011, 'J': 0.0010, 'Z': 0.0007
                               }
-        These frequencies were taken from wikipedia. 
+        These frequencies were taken from wikipedia.
     """
 
     letter_frequencies = {'e': 0.1202, 't': 0.0910, 'a': 0.0812, 'o': 0.0768,
@@ -336,12 +336,12 @@ def is_english_letterfreq(ct):
                           }
 
 
-    l = len(string)
+    l = len(ct)
     score = 0
     for i in range(0,l):
 
-        if string[i] in letter_frequencies:
-            score = score + letter_frequencies[string[i]]
+        if ct[i] in letter_frequencies:
+            score = score + letter_frequencies[ct[i]]
         else:
             pass
 
@@ -350,7 +350,6 @@ def is_english_letterfreq(ct):
 # ---------------------------------------------------------------------------
 #                             XOR Encryption
 # ---------------------------------------------------------------------------
-
 def XOR_encryption(plaintext, key):
 
     '''
@@ -401,8 +400,6 @@ def XOR_encryption(plaintext, key):
 
     return ciphertext
 
-
-
 # ---------------------------------------------------------------------------
 #                         Decipher XOR Encryption
 # ---------------------------------------------------------------------------
@@ -449,7 +446,6 @@ def one_character_XOR_decipher(cipher_text):
 
 # Cryptopals Set 1 Challenge 4 requires us to do just that kind of search
 # through a file for a section that has been encrypted.
-
 def one_character_XOR_search_decipher(cipher_text):
 
     '''

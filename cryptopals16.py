@@ -110,7 +110,11 @@ print 'As there is only a smaller number of options, we can try them all.'
 # As it is unlikely a keyword will have length 2, let us first try and see
 # if the keyword is length 3.
 size_of_blocks = len(ciphertext_bytes)/3
-print size_of_blocks
+
+### ERROR HERE! This does not produce the right blocks. They have a lot
+###   BELOW     overlap as I have written the code. They don't partition
+###             as required by the algorithm specified by the cryptopals.
+
 # Blocks is the list of bytes three (keysize) apart.
 blocks = []
 for i in range(0,3):
@@ -124,4 +128,44 @@ for i in range(0,3):
 # ---------------------------------------------------
 
 # For this, we want to score each choice of character. The highest score
-# should be the corresponding character of the key. 
+# should be the corresponding character of the key.
+
+block_one = blocks[0]
+block_two = blocks[1]
+block_three = blocks[2]
+
+key_one = ''
+key_two = ''
+key_three = ''
+
+score_one = 0
+score_two = 0
+score_three = 0
+
+character_block_one = ''
+character_block_two = ''
+character_block_three = ''
+
+block_one_decimal = [binary_to_decimal(x) for x in block_one]
+
+for key in range(65,127):
+
+    XOR_one = [x^key for x in block_one_decimal]
+
+    text_one = ''
+
+    for x in XOR_one:
+        text_one += chr(x)
+
+    score = is_english_letterfreq(text_one)
+
+    if score > score_one:
+        score_one = score
+        #print text_one
+        #print score_one
+        key_one = chr(key)
+        #print key_one
+    else:
+        pass
+
+#print key_one
