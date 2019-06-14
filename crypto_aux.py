@@ -251,7 +251,7 @@ def is_english_wordfreq(ct):
     # upon the length of the text.
     count = 0
     common_words = ['the', 'be ', 'to ', 'of ', 'and', 'for', 'in ', 'not',
-                    'you', ' a ']
+                    'you', ' a ', 'is ', 'Now']
 
     # We loop through the text looking for any instance of the these
     # three character words. Increasing our count whenever one is found.
@@ -263,17 +263,67 @@ def is_english_wordfreq(ct):
     # determine whether the sentence is English. In long texts one might
     # expect some words to arise by chance in gibberish, so the count
     # should be higher for longe texts. Smaller for shorter texts.
-    if count > 0:
+    if count > 1:
         return True
     else:
         return False
+
+
+
+# ---------------------------------------------------------------------------
+#                             XOR Encryption
+# ---------------------------------------------------------------------------
+
+def XOR_encryption(plaintext, key):
+
+    '''
+        Input: plaintext (type str) and key (type str).
+
+        Output: Plaintext XOR'd against the (repeated) key printed in
+                hex encoding to "look pretty".
+
+    '''
+
+    plaintext = list(plaintext)
+    key = list(key)
+
+    l_key = len(key)
+    l_plaintext = len(plaintext)
+
+    # Use ASCII encoding to get intger values for each character in plaintext.
+    plaintext = [ord(x) for x in plaintext]
+
+    # Since the key length may not divide the length of the plaintext, we have
+    # to make sure we repeat the key the correct number of times.
+    repeat = l_plaintext / l_key
+    buff = l_plaintext % l_key
+    key = key * repeat
+    for i in range(0,buff):
+        key.append(key[i])
+    key = [ord(x) for x in key]
+
+    # With the key the appropiate length, we can now XOR the plaintext with key.
+    ciphertext_ASCII = [x^y for x,y in zip(plaintext,key)]
+    ciphertext_binary = [decimal_to_binary(x) for x in ciphertext_ASCII]
+    ciphertext_hex = [binary_to_hex(x) for x in ciphertext_binary]
+
+    ciphertext = ''
+    for x in ciphertext_hex:
+        ciphertext += x
+
+    return ciphertext
+
+
 
 # ---------------------------------------------------------------------------
 #                         Decipher XOR Encryption
 # ---------------------------------------------------------------------------
 
+# This function good to apply on cipher text all of which has been encrypted
+# with single character XOR. If one were to search through a .txt file
+# for parts that have been encrypted the output of this function would
+# not be so useful.
 def one_character_XOR_decipher(cipher_text):
-
 
     '''
         Input: Type list of integers. This function takes the cipher text after
@@ -282,12 +332,15 @@ def one_character_XOR_decipher(cipher_text):
 
         Output: Plaintext message and the key.
 
+        Note: This instance of the function is best used when applied to
+              text that is known to be encrypted using XOR cipher.
+
     '''
 
     l_cipher = len(cipher_text)
 
     # This lists all possible single character keys.
-    keys = [chr(x) for x in range(0,128)]
+    keys = [chr(x) for x in range(0,255)]
 
     for key in keys:
 
@@ -303,5 +356,50 @@ def one_character_XOR_decipher(cipher_text):
 
             return "Key is: %s. \nPlaintext is: %s.\n" % (key,readable_message)
             break
+        else:
+            pass
+
+# Cryptopals Set 1 Challenge 4 requires us to do just that kind of search
+# through a file for a section that has been encrypted.
+
+def one_character_XOR_search_decipher(cipher_text):
+
+    '''
+        Input: Type list of integers. This function takes the cipher text after
+               it has been put into bytes and then turned into the corresponding
+               integers.
+
+        Output: Boolean, as to whether or not the text has been deciphered
+                into a proper english sentence.
+
+        Note: This instance of the function is used to search for lines
+              encrypted with XOR inside a file which is not entirely encrypted
+              in this way. Looking for encrypted text among gibberish.
+
+    '''
+
+    keys = [chr(x) for x in range(0,255)]
+    l_cipher = len(cipher_text)
+
+    for key in keys:
+
+        plain_text_candidate = []
+
+        for i in range(0, l_cipher):
+            plain_text_candidate.append(cipher_text[i] ^ ord(key))
+
+        if is_english_wordfreq(plain_text_candidate) == True:
+            readable_message = ''
+            for x in plain_text_candidate:
+                readable_message += chr(x)
+
+            print "Key is: %s \nPlaintext is: %s\n" % (key,readable_message)
+
+
+            return True
+            # We are told there is only one line of ciphertext, so we can
+            # stop the function once we have found one.
+            break
+
         else:
             pass
