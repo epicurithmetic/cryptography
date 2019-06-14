@@ -355,3 +355,51 @@ def decimal_to_base64(n):
         return '+'
     else:
         return '/'
+
+# With the functions above we can write a function which turns hex to base64
+def hex_to_base64(hex_string):
+
+    '''
+        This function turns a hexadecimal string (type string) into a base64
+        string (type string) by first breaking the hex string into its binary
+        representation, collecting those bits into 6-bit bytes and then
+        converting each of those bytes into the corresponding base64
+        output.
+
+        We collect into 6-bit bytes as 63_10 = 111111_2 i.e. we need at most
+        6-bits to reprsent integers in the interval [0,63]
+
+        Input: hex string.
+        Output: base64 string.
+
+    '''
+
+    binary_string = hex_to_binary(hex_string)
+    L = len(binary_string)
+    N = L // 6                                  # This is the number of full 6-bit bytes.
+    r = L % N                                   # This is the size of the left over byte.
+
+    # Collect the bits into 6-bit bytes.
+    sixbit_bytes = []
+
+    # Note: we collect from the righthandside of the binary string.
+    #       imagining we are reading the number as it is feed in from the
+    #       left.
+    for i in range(0,N):
+        sixbit_bytes.append(binary_string[(L - 6 - (6*i)): L - (6*i)])
+
+    sixbit_bytes.append(binary_string[0:r])
+
+    # Now turn the bytes into their base64 characters.
+    for i in range(0,N+1):
+        sixbit_bytes[i] = decimal_to_base64(binary_to_decimal(sixbit_bytes[i]))
+
+    # Because of the way we have read the bytes off we must reverse them.
+    sixbit_bytes.reverse()
+
+    base64_string = ''
+
+    for i in range(0, N+1):
+        base64_string += str(sixbit_bytes[i])
+
+    return base64_string
