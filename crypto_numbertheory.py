@@ -491,6 +491,34 @@ def base64_to_decimal(n):
     else:
         return 63
 
+# # Binary to base64...
+# def binary_to_base64(n):
+#     '''
+#         Input: binary (type string)
+#         Output: base64 (type string)
+#
+#     '''
+#     decimal_rep = binary_to_decimal(n)
+#     base64_rep = decimal_to_base64(decimal_rep)
+#
+#     return base64_rep
+#
+# # ... and back again.
+# def base64_to_binary(n):
+#
+#     '''
+#         Input: base64 (type string)
+#         Output: binary (type string)
+#
+#     '''
+#
+#     decimal_rep = base64_to_decimal(n)
+#     binary_rep = decimal_to_base64(decimal_rep)
+#
+#     return binary_rep
+#
+
+
 # With the functions above we can write a function which turns hex to base64
 def hex_to_base64(hex_string):
 
