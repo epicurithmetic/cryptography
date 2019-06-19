@@ -122,11 +122,70 @@ print ciphertext_test == goal
 # ---------------------------------------------------------------------------
 print '\n'
 print '-'*41
-print 'Challenge 6: Implement repeating-key XOR'
+print 'Challenge 6: Break repeating-key XOR'
 print '-'*41
 print '\n'
 
 text1 = 'this is a test'
 text2 = 'wokka wokka!!!'
 print hamming_plaintext(text1, text2)
+print 'This was a test to see if my hamming distance function works.'
+print 'It returns 37, the correct value.\n'
 # 37! Test passed.
+
+# ---------------------
+#  Stage 0: Read file
+# ---------------------
+
+# Note: due to formatting of the file, there are '\n' commands which
+#       must be removed from the lines before the algorithm can be
+#       applied.
+
+# Import text from the file given with the exercise.
+file = open("cpals16.txt", "r")
+file_lines = []
+for i in range(0,64):
+    file_lines.append(file.readline())
+file.close()
+
+# Turn the given file into a string.
+file_string = ''
+for part in file_lines:
+    # This removes the final character from each line. This seems necessary.
+    file_string = file_string + part[:-1]
+
+# --------------------------------------------
+#  Stage 1: Data manipulation - bits n bytes
+# --------------------------------------------
+
+file_list_base64 = list(file_string)
+file_list_decimal = [base64_to_decimal(x) for x in file_list_base64]
+file_list_binary = [decimal_to_binary(x) for x in file_list_decimal]
+
+# Note: Not all of these binary numbers are 6-bits long.
+#       So we pad them to 6-bits. Technically, the first entry does not need
+#       to be padded. Padding it does not change anything.
+L = len(file_list_binary)
+for i in range(0,L):
+    l_string = len(file_list_binary[i])
+    file_list_binary[i] = ((6 - l_string)* '0') + file_list_binary[i]
+
+# This stores the data as a binary string.
+ciphertext_binary = ''
+for x in file_list_binary:
+    ciphertext_binary += x
+
+# This stores the data as a list of (8-bit) bytes.
+ciphertext_bytes = binary_to_bytes(ciphertext_binary)
+# For some reason there is an empty string in the first entry...
+del ciphertext_bytes[0]
+number_of_bytes = len(ciphertext_bytes)
+
+# --------------------------------------------
+#  Stage 2: Find the (most likely) key length
+# --------------------------------------------
+
+key_size = XOR_keysize(ciphertext_binary)
+
+print "The key size with smallest hamming distance score is: %s" % key_size
+print  "Therefore, we should expect the key size to be %s" % key_size

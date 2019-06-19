@@ -165,7 +165,6 @@ def hamming_binary(binary1, binary2):
     else:
         return 'Binary strings not equal length.'
 
-
 # ---------------------------------------------------------------------------
 #                               XOR Functions
 # ---------------------------------------------------------------------------
@@ -403,6 +402,62 @@ def XOR_encryption(plaintext, key):
 # ---------------------------------------------------------------------------
 #                         Decipher XOR Encryption
 # ---------------------------------------------------------------------------
+
+# This function scores keysizes and returns the smallest score. The smallest
+# score is the "most likely" to be the keysize for an XOR encryption.
+def XOR_keysize(binary_data):
+
+    '''
+        Input: binary string (type str)
+        Output: key length (type int)
+
+        This function takes a binary string input (assumed to be the binary
+        data of an XOR encrypted file) and outputs an integer corresponding
+        to the most likely keysize that was used to encrypt the data.
+
+        Note: This function does more than it needs to. It could easily be
+              made more efficient.
+
+    '''
+
+    # We calculate the scores for a number of key lengths.
+    key_scores = []
+
+    # This loop dictates the number of key lengths test.
+    for s in range(1,41):
+
+        # Determine how many chunks of bytes of a given keysize there are.
+        N = (len(binary_data)/8)/s
+
+        # Collect the chunks.
+        chunks = []
+        for i in range(0,N):
+            chunk = binary_data[(8*s)*i:(8*s)*(i+1)]
+            chunks.append(chunk)
+
+        # Now we calculate the hamming distances of pairs of chunks. Scaled by
+        # the keysize in order to normalize the scores across keysizes.
+        hamming_distances_chunks = []
+        for j in range(0, (N/2)-1):
+            ham_chunk = (hamming_binary(chunks[2*j],chunks[(2*j)+1])/float(s))
+            hamming_distances_chunks.append(ham_chunk)
+
+        # Now average all of the hamming distances for the chunks.
+        score = sum(hamming_distances_chunks)/N
+        key_scores.append([s,score])
+
+    # Now it remains to pick the smallest.
+    key_size = 0
+    min_key_ham = 1000
+
+    for k in key_scores:
+        if k[1] < min_key_ham:
+            min_key_ham = k[1]
+            key_size = k[0]
+        else:
+            pass
+
+    return key_size
 
 # This function good to apply on cipher text all of which has been encrypted
 # with single character XOR. If one were to search through a .txt file

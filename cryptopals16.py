@@ -20,6 +20,8 @@ from crypto_aux import *
 
 # Note: when reading the file one naturally obtains a new-line command "\n"
 #       which has to be removed in order to decrypt the ciphertext properly.
+#       This may be due to the way I am reading. Or, due to some formatting
+#       which happened post encryption.
 
 # Import text from the file given with the exercise.
 file = open("cpals16.txt", "r")
@@ -38,7 +40,7 @@ for part in file_lines:
 
 # Note: each line in the file ends with a newline ( \n ) command.
 #       These need to be removed before decryption. Or else the algorithm
-#       outlined by this script will not work. 
+#       outlined by this script will not work.
 
 # ---------------------------------------------------------------------------
 #                       Step 1: Base64 ---> 6-bit binary
@@ -67,6 +69,7 @@ ciphertext_binary = ''
 for x in file_list_binary:
     ciphertext_binary += x
 
+#print ciphertext_binary
 # ---------------------------------------------------------------------------
 #                     Step 3: Undo the XOR Encryption...
 # ---------------------------------------------------------------------------
@@ -84,13 +87,13 @@ number_of_bytes = len(ciphertext_bytes)
 
 # So, I know the key length is 29. In order to test whether or not I have
 # done my bit/byte manipulation correctly I will use the known key to check.
-key = "Terminator X: bring the noise"
-key = list(key)
-key = [ord(x) for x in key]
-key = key * number_of_bytes
-#print 'Key length: ', len(key)
-
-text = [chr((binary_to_decimal(x) ^ y)) for x,y in zip(ciphertext_bytes,key)]
+# key = "Terminator X: bring the noise"
+# key = list(key)
+# key = [ord(x) for x in key]
+# key = key * number_of_bytes
+# #print 'Key length: ', len(key)
+#
+# text = [chr((binary_to_decimal(x) ^ y)) for x,y in zip(ciphertext_bytes,key)]
 
 # What this "sanity check" showed me is that an error entered when reading
 # the file into the script. Lesson: be mindful of newline (or other invisible?)
@@ -100,6 +103,23 @@ text = [chr((binary_to_decimal(x) ^ y)) for x,y in zip(ciphertext_bytes,key)]
 #  Step 3a: Find the key length
 # ---------------------------------
 
+# Note: key difference to cryptopals solution is that this script considers
+#       all pairs of key-size many bytes. Not just the first few.
+
+key_size = XOR_keysize(ciphertext_binary)
+
+print "The key size with smallest hamming distance score is: %s" % key_size
+print  "Therefore, we should expect the key size to be %s" % key_size
+
+# This predicts the key size is 29. It has the lowest score. It is significantly
+# different from all of the others.
+
 # ----------------------------
 #  Step 3b: Break into blocks
 # ----------------------------
+
+# Step 3a tells us that the key size is (probably) 29.
+key_size = 29
+
+# This step requires us to break the bytes into transposed blocks of 29
+# and attack each of these with the single character key XOR attack.
