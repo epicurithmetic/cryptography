@@ -69,7 +69,7 @@ ciphertext_binary = ''
 for x in file_list_binary:
     ciphertext_binary += x
 
-#print ciphertext_binary
+
 # ---------------------------------------------------------------------------
 #                     Step 3: Undo the XOR Encryption...
 # ---------------------------------------------------------------------------
@@ -82,7 +82,7 @@ del ciphertext_bytes[0]
 number_of_bytes = len(ciphertext_bytes)
 
 # ---------------------------------------------------------------------------
-#   Aside: Sanity Check... So far failed.
+#   Aside: Sanity Check...
 # ---------------------------------------------------------------------------
 
 # So, I know the key length is 29. In order to test whether or not I have
