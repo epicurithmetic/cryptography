@@ -542,3 +542,40 @@ def one_character_XOR_search_decipher(cipher_text):
 
         else:
             pass
+
+
+# The next instance of the XOR decipher function simply returns the key.
+# Also the first to employ character frequency rather than word frequency.
+def one_character_letterfreq_XOR_decipher(cipher_text_bytes):
+
+    '''
+        Input: List of bytes of binary data corresponding to data encrypted with
+               single character XOR (type list)
+
+        Output: One character key used to encrypt.
+
+        Note: This uses letter frequency analysis to detect the key.
+
+    '''
+
+    max_score = 0
+    max_score_key = ''
+
+    keys = range(0,255)
+
+    for key in keys:
+
+        data_XOR_key = [(binary_to_decimal(x) ^ key) for x in cipher_text_bytes]
+        message = ''
+        for x in data_XOR_key:
+            message += chr(x)
+
+        score = is_english_letterfreq(message)
+        #print score
+        if score > max_score:
+            max_score = score
+            max_score_key = chr(key)
+        else:
+            pass
+
+    return max_score_key

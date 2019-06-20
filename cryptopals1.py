@@ -182,10 +182,41 @@ del ciphertext_bytes[0]
 number_of_bytes = len(ciphertext_bytes)
 
 # --------------------------------------------
-#  Stage 2: Find the (most likely) key length
+#  Stage 2: Find the (most likely) key length.
 # --------------------------------------------
 
 key_size = XOR_keysize(ciphertext_binary)
 
 print "The key size with smallest hamming distance score is: %s" % key_size
 print  "Therefore, we should expect the key size to be %s" % key_size
+
+# -----------------------------------------------------------
+#  Stage 3: Break the transposed blocks and assemble the key.
+# -----------------------------------------------------------
+# ----------------------------
+#  Step 3a: Break into blocks
+# ----------------------------
+
+# This step requires us to break the bytes into transposed blocks of 29
+# and attack each of these with the single character key XOR attack.
+
+# Number of transpositions.
+T = number_of_bytes/key_size
+# Initialize the collection of blocks.
+transposed_blocks = []
+
+# Collect each of the transposed blocks.
+for i in range(0,key_size):
+    block = []
+    for j in range(0, T):
+        block.append(ciphertext_bytes[i+(j*key_size)])
+    transposed_blocks.append(block)
+
+# ----------------------------------------------------------------
+#  Step 3b: Break blocks as single character XOR and assemble key.
+# ----------------------------------------------------------------
+
+XOR_key = ''
+for block in transposed_blocks:
+    XOR_key += one_character_letterfreq_XOR_decipher(block)
+print XOR_key
