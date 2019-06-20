@@ -109,7 +109,7 @@ number_of_bytes = len(ciphertext_bytes)
 key_size = XOR_keysize(ciphertext_binary)
 
 print "The key size with smallest hamming distance score is: %s" % key_size
-print  "Therefore, we should expect the key size to be %s\n" % key_size
+print "Therefore, we should expect the key size to be %s\n" % key_size
 
 # This predicts the key size is 29. It has the lowest score. It is significantly
 # different from all of the others.
@@ -140,4 +140,22 @@ for i in range(0,key_size):
 XOR_key = ''
 for block in transposed_blocks:
     XOR_key += one_character_letterfreq_XOR_decipher(block)
-print '\n The key is: %s\n' % XOR_key
+print '\nThe key is: %s\n' % XOR_key
+
+# ---------------------------------
+#  Step 3d: Decrpyt the .txt file!
+# ---------------------------------
+
+# Repeat the key along the length of the text.
+XOR_key_list = list(XOR_key)
+full_bytes_key = number_of_bytes/len(XOR_key)
+remainder_key = number_of_bytes % len(XOR_key)
+repeated_key = XOR_key_list*full_bytes_key + list(XOR_key[0:remainder_key])
+
+decrypted_text_data = [(binary_to_decimal(x) ^ ord(y)) for x,y in zip(ciphertext_bytes, repeated_key)]
+
+decrypted_message = ''
+for x in decrypted_text_data:
+    decrypted_message += chr(x)
+
+print decrypted_message

@@ -220,3 +220,21 @@ XOR_key = ''
 for block in transposed_blocks:
     XOR_key += one_character_letterfreq_XOR_decipher(block)
 print XOR_key
+
+# ---------------------------------
+#  Step 3c: Decrpyt the .txt file!
+# ---------------------------------
+
+# Repeat the key along the length of the text.
+XOR_key_list = list(XOR_key)
+full_bytes_key = number_of_bytes/len(XOR_key)
+remainder_key = number_of_bytes % len(XOR_key)
+repeated_key = XOR_key_list*full_bytes_key + list(XOR_key[0:remainder_key])
+
+decrypted_text_data = [(binary_to_decimal(x) ^ ord(y)) for x,y in zip(ciphertext_bytes, repeated_key)]
+
+decrypted_message = ''
+for x in decrypted_text_data:
+    decrypted_message += chr(x)
+print '\n'
+print decrypted_message
