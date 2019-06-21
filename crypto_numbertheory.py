@@ -618,16 +618,9 @@ def GF2_polynomial_sum(poly1, poly2):
 
     if l1 < l2:
         poly1 = '0'*(l2-l1) + poly1
-        print poly1
-        print poly2
     elif l2 < l1:
         poly2 = '0'*(l1-l2) + poly2
-        print len(poly1)
-        print len(poly2)
     else:
-        print poly1
-        print poly2
-
 
     sum_list = [((int(x) + int(y))%2) for x,y in zip(list(poly1),list(poly2))]
 
