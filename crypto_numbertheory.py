@@ -567,3 +567,89 @@ def hex_to_base64(hex_string):
         base64_string += str(sixbit_bytes[i])
 
     return base64_string
+
+# ---------------------------------------------------------------------------
+#                          Arithmetic over p=2
+# ---------------------------------------------------------------------------
+
+# Code for doing arithmetic in GF(2) and its finite extensions. For cryptography
+# purposes a lot of work is done in GF(256). But code should be written for
+# any finite extension of GF(2).
+
+# When working in such an extension we must realise it has a quotient of the
+# polynomial ring with coefficients in GF(2). For that, we have to *chose*
+# an irreducible polynomial to quotient by for each GF(n).
+
+# In the case of implementing the Advanced Encryption Standard (AES) block
+# cipher one is required to use the following specified polynomial.
+
+#           AES-Specficication: f(x) = x^8 + x^4 + x^3 + x + 1
+
+# Polynomials over GF(2) have coefficients consiting of 0 or 1. Together with
+# the powers of x. However, the powers of x are really just place holders.
+# For this reason, we can (and will) represent a polynomial simply as a binary
+# string. The coefficient of the highest power of x will be the left-most entry
+# of the string, and they will descend along to the constant term at the right.
+
+# Example: x^3 + x + 1 is represented as '1011'. The 0 represents the fact that
+#          there are no x^2 terms. Each 1 represents the 1 in front of the other
+#          terms of the polynomial.
+
+# With this choice of notation made, we can now write functions which perform
+# arithmetic on polynomials over GF(2). In particular we require functions
+# which (i) add polynomials (ii) multiply polynomials (iii) calculate the
+# remainder upon divison of one polynomial by another, and (iv) the greatest
+# common divisor of two polynomials.
+
+def GF2_polynomial_product(poly1, poly2):
+
+    '''
+        Input: two binary strings representing polynomials over GF(2)
+               (type, str)
+        Output: one binary string repsrenting the product of input
+                polynomials. (type, str)
+
+    '''
+
+
+    l1 = len(poly1)
+    l2 = len(poly2)
+
+    l = l1+l2-1
+
+    # Reverse the inputs to make the degree of the terms in the polynomial
+    # more naturally match the index of python range function.
+    poly1 = list(poly1)
+    poly1.reverse()
+
+    poly2 = list(poly2)
+    poly2.reverse()
+
+
+    # Goal is to update this list with the appropiate coefficients of the
+    # product of the input polynomials.
+    product_list = [0]*l
+
+    # Range over elements of the first polynomial: poly1
+    for i in range(0,l1):
+        # Note the degree of the current term in poly1 is equal to, i, the
+        # counter of the for-loop.
+
+        # Range over elements of the second polynomial: poly2
+        for j in range(0,l2):
+
+            # This product contributes to the coefficient of a term of
+            # degree i + j ...
+            c = int(poly1[i])*int(poly2[j])
+
+            # ... so we update the i+jth coefficient of the product.
+            product_list[i+j] = ((product_list[i+j] + c) % 2)
+
+    product_list.reverse()
+    product = ''
+    for x in product_list:
+        product += str(x)
+
+    return product
+
+print GF2_polynomial_product('10011', '1101')
