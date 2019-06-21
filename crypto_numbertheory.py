@@ -1,5 +1,6 @@
 # Number theory related functions.
 
+# Primes are sweeeet.
 
 # ---------------------------------------------------------------------------
 #                          Euclidean Algorithm.
