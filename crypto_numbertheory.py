@@ -601,6 +601,44 @@ def hex_to_base64(hex_string):
 # remainder upon divison of one polynomial by another, and (iv) the greatest
 # common divisor of two polynomials.
 
+def GF2_polynomial_sum(poly1, poly2):
+
+    '''
+        Input: Two binary strings representing polynomials over GF(2) (type str)
+        Output: Binary string representing the sum of the polynomials over
+                GF(2) (type str)
+
+        Note: Polynomial addition mod 2 is nothing but XOR. That is to say, the
+              sum is obtained by XOR'ing the coefficients of the same degree.
+
+    '''
+
+    l1 = len(poly1)
+    l2 = len(poly2)
+
+    if l1 < l2:
+        poly1 = '0'*(l2-l1) + poly1
+        print poly1
+        print poly2
+    elif l2 < l1:
+        poly2 = '0'*(l1-l2) + poly2
+        print len(poly1)
+        print len(poly2)
+    else:
+        print poly1
+        print poly2
+
+
+    sum_list = [((int(x) + int(y))%2) for x,y in zip(list(poly1),list(poly2))]
+
+    sum = ''
+    for x in sum_list:
+        sum+=str(x)
+
+    return sum
+
+#print GF2_polynomial_sum('10011', '1101')
+
 def GF2_polynomial_product(poly1, poly2):
 
     '''
@@ -652,4 +690,4 @@ def GF2_polynomial_product(poly1, poly2):
 
     return product
 
-print GF2_polynomial_product('10011', '1101')
+#print GF2_polynomial_product('10011', '1101')
