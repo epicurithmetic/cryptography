@@ -1,14 +1,18 @@
 # Number theory related functions.
 
-# Primes are sweeeet.
+# ---------------------------------------------------------------------------
+#                        Primes and Primality Tests
+# ---------------------------------------------------------------------------
+
+# 
+
 
 # ---------------------------------------------------------------------------
-#                          Euclidean Algorithm.
+#                          Euclidean Algorithm
 # ---------------------------------------------------------------------------
 
 # This is an ancient algorithm for determining the "greatest common divisor"
 # i.e. GCD of two positive integers.
-
 def euclid_gcd(a,b):
 
     '''
@@ -28,6 +32,106 @@ def euclid_gcd(a,b):
         a = b
         b = r
         return euclid_gcd(a,b)
+
+# With this function we can define Euler's phi function.
+def euler_totient(n):
+
+    '''
+        Input: An integer (Type, int)
+        Output: Number of integers less than that are coprime to n (Type, int)
+
+        Note: this assumes input is greater than 1.
+
+    '''
+
+    count = 1
+    # Increase count by 1 each time an integer is coprime to n.
+    for x in range(2,n):
+        if euclid_gcd(x,n) == 1:
+            count +=1
+        else:
+            pass
+
+    return count
+
+# Extended Euclidean algorithm allows us to calculate inverses in modular
+# arithmetic, when they exist.
+def extended_euclid_gcd(a,b):
+
+    '''
+        Input: Integers m,n (Type, int)
+        Output: Integers a,b such that am + bn = gcd(m,n) (Type, int)
+
+    '''
+
+    # Initialize the outputs.
+    s = 0           # s (old_s) will be the multiple of a.
+    old_s = 1
+    t = 1           # t (old_t) will be the multiple of b.
+    old_t = 0
+    r = b           # r (old_r) will be the greatest common divisor.
+    old_r = a
+
+    while (not (r == 0)):
+        q = old_r / r
+        (old_r,r) = (r, old_r - q*r)
+        (old_s,s) = (s, old_s - q*s)
+        (old_t,t) = (t, old_t - q*t)
+
+
+    print "Bezout coefficients: ", (old_s, old_t)
+    print "[%s]*%s + [%s]*%s = gcd(%s,%s) = %s" % (old_s,a,old_t,b,a,b,old_r)
+    print "Greatest common divisor: ", old_r
+    return "What more could you want?"
+
+# ... with the extended Euclidean algorithm implemented we can now calculate
+# inverses in modular arithmetic.
+def euclid_modular_inverse(a,p):
+
+    '''
+        Input: Integers a,p (Type, int)
+        Output: Inverse of a mod p. (Type, int).
+
+        Note: This code assumes a < p and that the inverse exists. Not the
+        function will return "None" if a is not invertible mod p.
+
+        Note: This function employs the extended Euclidean algorithm to find
+        the gcd and inverse.
+
+        Note: This function assuemes neither input is 0.
+
+
+    '''
+
+    # Initialize the outputs.
+    s = 0
+    old_s = 1       # old_s will be the inverse of a.
+    t = 1
+    old_t = 0
+    r = p
+    old_r = a       # old_r is the greatest common divisor of a,p
+
+    while (not (r == 0)):
+        q = old_r / r
+        (old_r,r) = (r, old_r - q*r)
+        (old_s,s) = (s, old_s - q*s)
+        (old_t,t) = (t, old_t - q*t)
+
+    # We want a representative for the inverse of a in [0,p-1]. In the case
+    # that old_s is negative, we have to add p to it in order to get a positive
+    # representative for the coset.
+    if old_s < 0:
+        old_s += p
+    else:
+        pass
+
+    # Return value depends on whether a is invertible.
+    if old_r == 1:
+        return old_s
+    else:
+        print "%s not invertible mod %s" % (a,p)
+        return None
+
 
 # ---------------------------------------------------------------------------
 #                          Base Change Functions
