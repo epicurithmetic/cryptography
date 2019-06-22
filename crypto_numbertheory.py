@@ -798,7 +798,7 @@ def GF2_euclid_gcd(poly1, poly2):
 def GF256_multiplication(x,y):
 
     '''
-        Input: Two binary strings of length 8 corresponding to an element in
+        Input: Two binary strings (max length 8) corresponding to an element in
                the field GF(256) i.e. the degree 8 extension of GF(2).
 
         Output: One binary string corresponding to the product xy in GF(8)
@@ -812,10 +812,13 @@ def GF256_multiplication(x,y):
     polynomial_product = GF2_polynomial_product(x,y)
 
     if len(polynomial_product) > 8:
-        return GF2_polynomial_remainder(polynomial_product, '100011011')
+        GF256_product = GF2_polynomial_remainder(polynomial_product, '100011011')
+        GF256_product = '0'*(8 - len(GF256_product)) + GF256_product
+        return GF256_product
     else:
+        polynomial_product = '0'*(8 - len(polynomial_product)) + polynomial_product
         return polynomial_product
 
 # Note: elements of GF(256) can be written compactly as two-character HEX
 #       strings. So, it might be useful to have a function which manipulates
-#       elements of GF(256) directly in this form. 
+#       elements of GF(256) directly in this form.
