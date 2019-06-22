@@ -601,6 +601,7 @@ def hex_to_base64(hex_string):
 # remainder upon divison of one polynomial by another, and (iv) the greatest
 # common divisor of two polynomials.
 
+# Polynomial addition in GF(2)
 def GF2_polynomial_sum(poly1, poly2):
 
     '''
@@ -621,17 +622,40 @@ def GF2_polynomial_sum(poly1, poly2):
     elif l2 < l1:
         poly2 = '0'*(l1-l2) + poly2
     else:
+        pass
 
     sum_list = [((int(x) + int(y))%2) for x,y in zip(list(poly1),list(poly2))]
 
+    # Remove any leading zeroes, as these give the wrong degree for the sum.
+    # However, we don't want to remove the leading zero if the polynomial
+    # is the zero polynomial!
+    leading_zeroes = True
+    while leading_zeroes == True:
+
+        # First check if the polynomial is the 0 polynomial. In which case, we
+        # do not want to remove the leading 0.
+        if len(sum_list) == 1:
+            leading_zeroes = False
+
+        # If the polynomial is of degree greater than 0, then we check for and
+        # remove any leading zeroes from the calculation.
+        elif sum_list[0] == 0:
+            del sum_list[0]
+            # Note: we deleting this entry shifts all elements along. So we
+            #       do not need to change the index we are looking at.
+
+        # If there are no (more) leading zeroes, then we can move on.
+        else:
+            leading_zeroes = False
+
+    # Put the polynomial into a string.
     sum = ''
     for x in sum_list:
-        sum+=str(x)
+        sum += str(x)
 
     return sum
 
-#print GF2_polynomial_sum('10011', '1101')
-
+# Polynomial multiplication in GF(2)
 def GF2_polynomial_product(poly1, poly2):
 
     '''
@@ -683,4 +707,81 @@ def GF2_polynomial_product(poly1, poly2):
 
     return product
 
-#print GF2_polynomial_product('10011', '1101')
+# Polynomial division in GF(2)
+def GF2_polynomial_remainder(dividend,divisor):
+
+    '''
+        Input: Two binary strings representating polynomials over GF(2). The
+               first argument is the dividend (the polynomial to be dividend)
+               and the second argument is the divisor. (Type, str)
+
+        Output: One polynomial string corresponding to the polynomial remainder
+                of the division of the dividend by the divisor. (Type, str)
+
+        Note: this is division in the integral domain of polynomials over
+              the field with two elements GF(2).
+
+    '''
+
+    # Edge cases to deal with: divisor = 0,1.
+    # You can't divide by 0!
+    if divisor == '0':
+        print "You just divided by 0. You blew up the universe. Good job."
+        return None
+    # Since the length of the divisor does not change, I have to deal with
+    # the case the divisor = 1 apart from the other cases.
+    if divisor == '1':
+        return dividend
+
+    while len(dividend) >= len(divisor):
+
+        # First, figure out the difference between highest powers.
+        deg_dividend = len(dividend)
+        deg_divisor = len(divisor)
+        shift = deg_dividend - deg_divisor
+
+        # Calculate the shift of the divisor.
+        shifted_factor = '1' + '0'*shift
+        shifted_divisor = GF2_polynomial_product(shifted_factor,divisor)
+
+        # Update the dividend according to the long divison algorith. Note that
+        # addition = subtraction in GF(2). That is why we sum here.
+        dividend = GF2_polynomial_sum(dividend, shifted_divisor)
+
+    return dividend
+
+# Polynomial GCD in GF(2)
+def GF2_euclid_gcd(poly1, poly2):
+
+    '''
+        Input: two binary strings representing the polynomials over GF(2) that
+               we are to calculate the GCD of (Type, str)
+
+        Output: binary string representing the polynomial that is the greatest
+                common divisor of the input polynomials (Type, str)
+
+        Note: This function implements Euclid's algorithim in the integral
+              domain of polynomials over GF(2). This is a recursive algorithm.
+
+        Edge cases of constant polynomials (0,1) treated seperately.
+
+    '''
+    # First consider the case(s) where either polynomial is 0.
+    if poly1 == '0':
+        return poly2
+    elif poly2 == '0':
+        return poly1
+
+    # Again, we have to deal with the cases in which either polynomial is
+    # 1 seperately to the other cases.
+    elif (poly1 == '1' or poly2 == '1'):
+        return '1'
+
+    # We have to be careful about which polynomial is of greater degree.
+    elif len(poly1) >= len(poly2):
+        r = GF2_polynomial_remainder(poly1, poly2)
+        return GF2_euclid_gcd(poly2, r)
+
+    else:
+        r = GF2_polynomial_remainder(poly2, poly1)
+        return GF2_euclid_gcd(poly1, r)
