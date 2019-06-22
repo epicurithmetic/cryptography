@@ -815,3 +815,7 @@ def GF256_multiplication(x,y):
         return GF2_polynomial_remainder(polynomial_product, '100011011')
     else:
         return polynomial_product
+
+# Note: elements of GF(256) can be written compactly as two-character HEX
+#       strings. So, it might be useful to have a function which manipulates
+#       elements of GF(256) directly in this form. 
