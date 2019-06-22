@@ -577,7 +577,7 @@ def hex_to_base64(hex_string):
 # any finite extension of GF(2).
 
 # When working in such an extension we must realise it has a quotient of the
-# polynomial ring with coefficients in GF(2). For that, we have to *chose*
+# polynomial ring with coefficients in GF(2). For that, we have to *choose*
 # an irreducible polynomial to quotient by for each GF(n).
 
 # In the case of implementing the Advanced Encryption Standard (AES) block
@@ -785,3 +785,33 @@ def GF2_euclid_gcd(poly1, poly2):
     else:
         r = GF2_polynomial_remainder(poly2, poly1)
         return GF2_euclid_gcd(poly1, r)
+
+# With the arithmetic of polynomials over GF(2) defined, we can begin to write
+# code for arithmetic in finite extensions of GF(2). In particular, we can
+# now perform arithmetic in GF(8) i.e. the field with 256 elements. As mentioned
+# above we will use the AES specified irreducible degree 8 polynomial to do
+# the arithmetic in GF(8).
+
+# Since addition does not increase the degree of a polynomial, we can use
+# the same GF(2) addition function all extens of GF(2). We need only worry about
+# multiplication for a given extension.
+def GF256_multiplication(x,y):
+
+    '''
+        Input: Two binary strings of length 8 corresponding to an element in
+               the field GF(256) i.e. the degree 8 extension of GF(2).
+
+        Output: One binary string corresponding to the product xy in GF(8)
+
+        Note: In order to do this arithmetic we must choose a polynomial to
+              quotient by. Since our main application will be AES, we take the
+              specified standard f(x) = x^8 + x^4 + x^3 + x + 1 = 100011011
+
+    '''
+
+    polynomial_product = GF2_polynomial_product(x,y)
+
+    if len(polynomial_product) > 8:
+        return GF2_polynomial_remainder(polynomial_product, '100011011')
+    else:
+        return polynomial_product
