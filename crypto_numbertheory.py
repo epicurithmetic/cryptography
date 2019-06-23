@@ -4,7 +4,7 @@
 #                        Primes and Primality Tests
 # ---------------------------------------------------------------------------
 
-# 
+#
 
 
 # ---------------------------------------------------------------------------
@@ -596,34 +596,6 @@ def base64_to_decimal(n):
     else:
         return 63
 
-# # Binary to base64...
-# def binary_to_base64(n):
-#     '''
-#         Input: binary (type string)
-#         Output: base64 (type string)
-#
-#     '''
-#     decimal_rep = binary_to_decimal(n)
-#     base64_rep = decimal_to_base64(decimal_rep)
-#
-#     return base64_rep
-#
-# # ... and back again.
-# def base64_to_binary(n):
-#
-#     '''
-#         Input: base64 (type string)
-#         Output: binary (type string)
-#
-#     '''
-#
-#     decimal_rep = base64_to_decimal(n)
-#     binary_rep = decimal_to_base64(decimal_rep)
-#
-#     return binary_rep
-#
-
-
 # With the functions above we can write a function which turns hex to base64
 def hex_to_base64(hex_string):
 
@@ -835,7 +807,7 @@ def GF2_polynomial_remainder(dividend,divisor):
     # Since the length of the divisor does not change, I have to deal with
     # the case the divisor = 1 apart from the other cases.
     if divisor == '1':
-        return dividend
+        return '0'
 
     while len(dividend) >= len(divisor):
 
@@ -854,6 +826,64 @@ def GF2_polynomial_remainder(dividend,divisor):
 
     return dividend
 
+# ... more GF(2) polynomial division, this time returning the quotient
+def GF2_polynomial_quotient(dividend,divisor):
+
+    '''
+        Input: Two binary strings representating polynomials over GF(2). The
+               first argument is the dividend (the polynomial to be dividend)
+               and the second argument is the divisor. (Type, str)
+
+        Output: One polynomial string corresponding to the polynomial quotient
+                of the division of the dividend by the divisor. (Type, str)
+
+        Note: this is division in the integral domain of polynomials over
+              the field with two elements GF(2). Executed using the long
+              division algorithm.
+
+    '''
+
+    # Initialize the quotient. Note the length is derived from the difference
+    # in degrees of the dividend and divisor.
+    quotient = ['0']*((len(dividend)-len(divisor))+1)
+
+    # Edge cases to deal with: divisor = 0,1.
+    # You can't divide by 0!
+    if divisor == '0':
+        print "You just divided by 0. You blew up the universe. Good job."
+        return None
+    # Since the length of the divisor does not change, I have to deal with
+    # the case the divisor = 1 apart from the other cases.
+    if divisor == '1':
+        return dividend
+
+    while len(dividend) >= len(divisor):
+
+        # First, figure out the difference between highest powers.
+        deg_dividend = len(dividend)
+        deg_divisor = len(divisor)
+        shift = deg_dividend - deg_divisor
+        # This updates the quotient polynomial
+        quotient[(len(quotient) - (shift+1))] = '1'
+
+        # Calculate the shift of the divisor.
+        shifted_factor = '1' + '0'*shift
+        shifted_divisor = GF2_polynomial_product(shifted_factor,divisor)
+
+        # Update the dividend according to the long divison algorithm. Note
+        # addition = subtraction in GF(2). That is why we sum here.
+        dividend = GF2_polynomial_sum(dividend, shifted_divisor)
+
+    # Turn the quotient into a string
+    quotient_str = ''
+    for x in quotient:
+        quotient_str += str(x)
+
+    return quotient_str
+
+print GF2_polynomial_product('11000010','101111')
+print GF2_polynomial_quotient(GF2_polynomial_product('11000010','101111'),'100011011')
+print GF2_polynomial_product(GF2_polynomial_product('11000010','101111'), '11101')
 # Polynomial GCD in GF(2)
 def GF2_euclid_gcd(poly1, poly2):
 
@@ -926,3 +956,32 @@ def GF256_multiplication(x,y):
 # Note: elements of GF(256) can be written compactly as two-character HEX
 #       strings. So, it might be useful to have a function which manipulates
 #       elements of GF(256) directly in this form.
+
+# The next function is a version of the EEA for polynomials over GF(2). This
+# will be used to find inverses in extensions of GF(2).
+def GF2_extended_euclid_gcd(poly1, poly2):
+    # This does not work yet.
+    s = '0'
+    old_s = '1'
+    t = '1'
+    old_t = '0'
+    r = poly2
+    old_r = poly1
+
+
+    while ( not( (r == '1') or (r == '0') ) ):
+        q = GF2_polynomial_quotient(old_r,r)
+        (old_r,r) = (r, GF2_polynomial_sum(old_r,GF2_polynomial_product(q,r)))
+        (old_s,s) = (s, GF2_polynomial_sum(old_s,GF2_polynomial_product(q,s)))
+        (old_t,t) = (t, GF2_polynomial_sum(old_t,GF2_polynomial_product(q,t)))
+
+
+    print "Bezout coefficients: ", (old_s, old_t)
+    print "[%s]*%s + [%s]*%s = gcd(%s,%s) = %s" % (old_s,poly1,old_t,poly2,poly1,poly2,old_r)
+    print "Greatest common divisor: ", old_r
+    return "What more could you want?"
+
+#print GF2_polynomial_quotient('100011011','11000010')
+#print GF2_polynomial_quotient('11000010','100011011')
+#print GF2_extended_euclid_gcd('100011011','11000010')
+#print GF2_extended_euclid_gcd('11000010','100011011')
