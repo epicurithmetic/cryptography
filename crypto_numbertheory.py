@@ -4,9 +4,49 @@
 #                        Primes and Primality Tests
 # ---------------------------------------------------------------------------
 
-#
+# List primes less than an upper-bound.
+def sieve_eratosthenes(n):
 
 
+    '''
+        Input: Integer (type, int)
+        Output: all primes less than input intger (type, list)
+
+    '''
+
+    # Inititally the sieve contains all numbers less than n.
+    primes = range(2,n)
+
+    # Now we remove multiples and iterate.
+    count = 0
+
+    while count <  len(primes):
+        for x in primes:
+            if primes[count] == x:
+                pass
+            elif (x % primes[count] == 0):
+                primes.remove(x)
+            else:
+                pass
+        count += 1
+    return primes
+
+# Number of primes less than an upper-bound.
+def landau_primecount(n):
+
+    '''
+        Input: Integer (type, int)
+        Output: number of primes less than or equal to the input integer
+        (type, int)
+
+        Slow by n = 100,000.
+
+    '''
+
+    primes = sieve_eratosthenes(n+1)
+    return len(primes)
+
+print landau_primecount(11)
 # ---------------------------------------------------------------------------
 #                          Euclidean Algorithm
 # ---------------------------------------------------------------------------
@@ -880,10 +920,10 @@ def GF2_polynomial_quotient(dividend,divisor):
         quotient_str += str(x)
 
     return quotient_str
-
-print GF2_polynomial_product('11000010','101111')
-print GF2_polynomial_quotient(GF2_polynomial_product('11000010','101111'),'100011011')
-print GF2_polynomial_product(GF2_polynomial_product('11000010','101111'), '11101')
+#
+# print GF2_polynomial_product('11000010','101111')
+# print GF2_polynomial_quotient(GF2_polynomial_product('11000010','101111'),'100011011')
+# print GF2_polynomial_product(GF2_polynomial_product('11000010','101111'), '11101')
 # Polynomial GCD in GF(2)
 def GF2_euclid_gcd(poly1, poly2):
 
