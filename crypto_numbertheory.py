@@ -17,7 +17,7 @@ def sieve_eratosthenes(n):
     # Inititally the sieve contains all numbers less than n.
     primes = range(2,n)
 
-    # Now we remove multiples and iterate.
+    # Now we remove multiples and iterate. We sieve out the composites.
     count = 0
 
     while count <  len(primes):
@@ -46,7 +46,69 @@ def landau_primecount(n):
     primes = sieve_eratosthenes(n+1)
     return len(primes)
 
-print landau_primecount(11)
+# The functions above calculate a bunch of prime numbers. The next function
+# takes an integer as input and returns (Boolean) whether or not it is prime.
+# In order to check whether an integer is prime, it suffices to check for
+# divisors upto and including it's squareroot.
+
+# Newton-Raphson is used to calculate (approximate) the squareroot.
+def newton_sqrt(x):
+
+    '''
+        Input: a number (Type, int or float) whose squareroot is sought
+        Output: Squareroot of input (Type, float)
+
+        Squareroot is approximated using Newton-Raphson.
+
+    '''
+
+    x_initial = 1
+    # Delta is the difference between iterations. Used to say how accurate
+    # we want the squareroot.
+    delta = 1
+
+    while delta > 0.001:
+        x_new = x_initial - ( ((x_initial ** 2) - x ) / float((2 * x_initial)))
+        delta = abs(x_new - x_initial)
+        x_initial = x_new
+
+    return x_initial
+
+# Now that we can calculate squareroots, we can write a primality test.
+def isit_prime(n):
+
+    '''
+        Input: an integer (Type, int)
+        Output: whether or not input is prime (Type, Boolean)
+
+        This function tests divisiblity for each integer upto the squareroot
+        of the input.
+
+        Time taken to execute noticeable near the prime n = 1000000000039
+
+    '''
+    # We need only test divisiblity upto and including squareroot.
+    divisor_bound = int(newton_sqrt(n))+1
+    # Boolean which will stop loop if divisor found.
+    has_divisor = False
+
+    d = 2
+    while d <= divisor_bound:
+        if (n % d) == 0:
+            has_divisor = True
+            break
+        else:
+            d = d + 1
+
+    if n == 2:
+        return True
+    elif has_divisor == True:
+        return False
+    else:
+        return True
+
+print isit_prime(1000000000039)
+
 # ---------------------------------------------------------------------------
 #                          Euclidean Algorithm
 # ---------------------------------------------------------------------------
