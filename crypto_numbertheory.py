@@ -1099,6 +1099,7 @@ def GF2_extended_euclid_gcd(poly1, poly2):
     print "Greatest common divisor: ", old_r
     return "What more could you want?"
 
+# With the EEA written, we can now calculate inverses in GF(256)
 def GF256_inverse(n):
 
     '''
@@ -1129,3 +1130,93 @@ def GF256_inverse(n):
 
 
     return old_t
+
+# Is it faster to calculate this everytime want it? Or is it better to look
+# the inverses up in a dictionary? We now create a .txt file which contain the
+# inverses, so we can write a dictionary.
+
+# This code writes the inverses into a file.
+# f = open("gf256_inverses.txt","w+")
+# GF256_hex_list = ['0','1','2','3','4','5','6','7','8','9','a','b','c','d','e','f']
+# for x in GF256_hex_list:
+#     for y in GF256_hex_list:
+#
+#         x_hex = hex_to_binary(x)
+#         x_hex = '0'*(4 - len(x_hex)) + x_hex
+#
+#         y_hex = hex_to_binary(y)
+#         y_hex = '0'*(4 - len(y_hex)) + y_hex
+#
+#         xy_GF256 = x_hex + y_hex
+#         xy_GF256 = list(xy_GF256)
+#
+#         # We don't want leading zeroes.
+#         leading_zeroes = True
+#         while leading_zeroes == True:
+#
+#             # First check if the polynomial is the 0 polynomial. In which case, we
+#             # do not want to remove the leading 0.
+#             if len(xy_GF256) == 1:
+#                 leading_zeroes = False
+#
+#             # If the polynomial is of degree greater than 0, then we check for and
+#             # remove any leading zeroes from the calculation.
+#             elif xy_GF256[0] == '0':
+#                 del xy_GF256[0]
+#                 # Note: we deleting this entry shifts all elements along. So we
+#                 #       do not need to change the index we are looking at.
+#
+#             # If there are no (more) leading zeroes, then we can move on.
+#             else:
+#                 leading_zeroes = False
+#
+#         xy = ''
+#         for i in xy_GF256:
+#             xy += i
+#         xy_hex = binary_to_hex(xy)
+#
+#         # Calculate inverse.
+#         inverse = GF256_inverse(xy)
+#         inverse_hex = binary_to_hex(inverse)
+#
+#         # Write the inverse to the file.
+#         f.write('"%s":"%s",\n' % (xy_hex,inverse_hex))
+# f.close()
+
+# This is a dictionary which stores the inverses of all elements in GF(256).
+# This dictionary uses the compact HEX notation for writing elements of
+# the finite field GF(256).
+GF256_inverse_dict = {
+"0":"0","1":"1","2":"8d","3":"f6","4":"cb","5":"52","6":"7b","7":"d1","8":"e8","9":"4f",
+"a":"29","b":"c0","c":"b0","d":"e1","e":"e5","f":"c7","10":"74","11":"b4","12":"aa",
+"13":"4b","14":"99","15":"2b","16":"60","17":"5f","18":"58","19":"3f","1a":"fd",
+"1b":"cc","1c":"ff","1d":"40","1e":"ee","1f":"b2","20":"3a","21":"6e","22":"5a",
+"23":"f1","24":"55","25":"4d","26":"a8","27":"c9","28":"c1","29":"a","2a":"98",
+"2b":"15","2c":"30","2d":"44","2e":"a2","2f":"c2","30":"2c","31":"45","32":"92",
+"33":"6c","34":"f3","35":"39","36":"66","37":"42","38":"f2","39":"35","3a":"20",
+"3b":"6f","3c":"77","3d":"bb","3e":"59","3f":"19","40":"1d","41":"fe","42":"37",
+"43":"67","44":"2d","45":"31","46":"f5","47":"69","48":"a7","49":"64","4a":"ab",
+"4b":"13","4c":"54","4d":"25","4e":"e9","4f":"9","50":"ed","51":"5c","52":"5",
+"53":"ca","54":"4c","55":"24","56":"87","57":"bf","58":"18","59":"3e","5a":"22",
+"5b":"f0","5c":"51","5d":"ec","5e":"61","5f":"17","60":"16","61":"5e","62":"af",
+"63":"d3","64":"49","65":"a6","66":"36","67":"43","68":"f4","69":"47","6a":"91",
+"6b":"df","6c":"33","6d":"93","6e":"21","6f":"3b","70":"79","71":"b7","72":"97",
+"73":"85","74":"10","75":"b5","76":"ba","77":"3c","78":"b6","79":"70","7a":"d0",
+"7b":"6","7c":"a1","7d":"fa","7e":"81","7f":"82","80":"83","81":"7e","82":"7f",
+"83":"80","84":"96","85":"73","86":"be","87":"56","88":"9b","89":"9e","8a":"95",
+"8b":"d9","8c":"f7","8d":"2","8e":"b9","8f":"a4","90":"de","91":"6a","92":"32",
+"93":"6d","94":"d8","95":"8a","96":"84","97":"72","98":"2a","99":"14","9a":"9f",
+"9b":"88","9c":"f9","9d":"dc","9e":"89","9f":"9a","a0":"fb","a1":"7c","a2":"2e",
+"a3":"c3","a4":"8f","a5":"b8","a6":"65","a7":"48","a8":"26","a9":"c8","aa":"12",
+"ab":"4a","ac":"ce","ad":"e7","ae":"d2","af":"62","b0":"c","b1":"e0","b2":"1f",
+"b3":"ef","b4":"11","b5":"75","b6":"78","b7":"71","b8":"a5","b9":"8e","ba":"76",
+"bb":"3d","bc":"bd","bd":"bc","be":"86","bf":"57","c0":"b","c1":"28","c2":"2f",
+"c3":"a3","c4":"da","c5":"d4","c6":"e4","c7":"f","c8":"a9","c9":"27","ca":"53",
+"cb":"4","cc":"1b","cd":"fc","ce":"ac","cf":"e6","d0":"7a","d1":"7","d2":"ae",
+"d3":"63","d4":"c5","d5":"db","d6":"e2","d7":"ea","d8":"94","d9":"8b","da":"c4",
+"db":"d5","dc":"9d","dd":"f8","de":"90","df":"6b","e0":"b1","e1":"d","e2":"d6",
+"e3":"eb","e4":"c6","e5":"e","e6":"cf","e7":"ad","e8":"8","e9":"4e","ea":"d7",
+"eb":"e3","ec":"5d","ed":"50","ee":"1e","ef":"b3","f0":"5b","f1":"23","f2":"38",
+"f3":"34","f4":"68","f5":"46","f6":"3","f7":"8c","f8":"dd","f9":"9c","fa":"7d",
+"fb":"a0","fc":"cd","fd":"1a","fe":"41","ff":"1c"
+}
