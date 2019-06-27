@@ -107,7 +107,6 @@ def isit_prime(n):
     else:
         return True
 
-print isit_prime(1000000000039)
 
 # ---------------------------------------------------------------------------
 #                          Euclidean Algorithm
@@ -135,7 +134,7 @@ def euclid_gcd(a,b):
         b = r
         return euclid_gcd(a,b)
 
-# With this function we can define Euler's phi function.
+# With this function we can define Euler's totient (phi) function.
 def euler_totient(n):
 
     '''
@@ -833,6 +832,9 @@ def GF2_polynomial_sum(poly1, poly2):
 
     return sum
 
+# print 'Sum test:'
+# print GF2_polynomial_sum('11101','1001')
+
 # Polynomial multiplication in GF(2)
 def GF2_polynomial_product(poly1, poly2):
 
@@ -885,6 +887,9 @@ def GF2_polynomial_product(poly1, poly2):
 
     return product
 
+# print 'Product test:'
+# print GF2_polynomial_product('11101','1001')
+
 # Polynomial division in GF(2)
 def GF2_polynomial_remainder(dividend,divisor):
 
@@ -927,6 +932,9 @@ def GF2_polynomial_remainder(dividend,divisor):
         dividend = GF2_polynomial_sum(dividend, shifted_divisor)
 
     return dividend
+
+# print 'Remainder test:'
+# print GF2_polynomial_remainder('11101','1001')
 
 # ... more GF(2) polynomial division, this time returning the quotient
 def GF2_polynomial_quotient(dividend,divisor):
@@ -982,10 +990,10 @@ def GF2_polynomial_quotient(dividend,divisor):
         quotient_str += str(x)
 
     return quotient_str
-#
-# print GF2_polynomial_product('11000010','101111')
-# print GF2_polynomial_quotient(GF2_polynomial_product('11000010','101111'),'100011011')
-# print GF2_polynomial_product(GF2_polynomial_product('11000010','101111'), '11101')
+
+# print 'Quotient test:'
+# print GF2_polynomial_quotient('11101','1001')
+
 # Polynomial GCD in GF(2)
 def GF2_euclid_gcd(poly1, poly2):
 
@@ -1062,7 +1070,15 @@ def GF256_multiplication(x,y):
 # The next function is a version of the EEA for polynomials over GF(2). This
 # will be used to find inverses in extensions of GF(2).
 def GF2_extended_euclid_gcd(poly1, poly2):
-    # This does not work yet.
+
+    '''
+        Input: Two polynomials (Type, str) whose GCD is sought.
+        Output: greatest common divisor (Type, str) of the input polynomials.
+                along with Bezout's Identity.
+
+    '''
+
+
     s = '0'
     old_s = '1'
     t = '1'
@@ -1071,11 +1087,11 @@ def GF2_extended_euclid_gcd(poly1, poly2):
     old_r = poly1
 
 
-    while ( not( (r == '1') or (r == '0') ) ):
+    while not ( r == '0' ):
         q = GF2_polynomial_quotient(old_r,r)
-        (old_r,r) = (r, GF2_polynomial_sum(old_r,GF2_polynomial_product(q,r)))
-        (old_s,s) = (s, GF2_polynomial_sum(old_s,GF2_polynomial_product(q,s)))
-        (old_t,t) = (t, GF2_polynomial_sum(old_t,GF2_polynomial_product(q,t)))
+        (old_r,r) = (r, GF2_polynomial_sum( old_r, GF2_polynomial_product(q,r) ))
+        (old_s,s) = (s, GF2_polynomial_sum(old_s,GF2_polynomial_product(q,s)) )
+        (old_t,t) = (t, GF2_polynomial_sum(old_t,GF2_polynomial_product(q,t)) )
 
 
     print "Bezout coefficients: ", (old_s, old_t)
@@ -1083,7 +1099,33 @@ def GF2_extended_euclid_gcd(poly1, poly2):
     print "Greatest common divisor: ", old_r
     return "What more could you want?"
 
-#print GF2_polynomial_quotient('100011011','11000010')
-#print GF2_polynomial_quotient('11000010','100011011')
-#print GF2_extended_euclid_gcd('100011011','11000010')
-#print GF2_extended_euclid_gcd('11000010','100011011')
+def GF256_inverse(n):
+
+    '''
+        Input: Element of GF(256) (Type, str) whose inverse is sought.
+        Output: Element of GF(256) (Type, str) which is the inverse of the
+                input element.
+
+        Note: This instance of GF(256) uses the AES-128 standard:
+                    f(x) = x^8 + x^4 + x^3 + x + 1 = 100011011
+              In order to calculate the product (and inverse) in the extension.
+
+    '''
+
+
+    s = '0'
+    old_s = '1'
+    t = '1'
+    old_t = '0'
+    r = n
+    old_r = '100011011'              # This is the AES-standard.
+
+    # This while loop executes the Extended Euclidean Algorithm.
+    while not ( r == '0' ):
+        q = GF2_polynomial_quotient(old_r,r)
+        (old_r,r) = (r, GF2_polynomial_sum(old_r,GF2_polynomial_product(q,r)))
+        (old_s,s) = (s, GF2_polynomial_sum(old_s,GF2_polynomial_product(q,s)))
+        (old_t,t) = (t, GF2_polynomial_sum(old_t,GF2_polynomial_product(q,t)))
+
+
+    return old_t
