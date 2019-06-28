@@ -629,7 +629,7 @@ def one_character_letterfreq_XOR_decipher(cipher_text_bytes):
 
 plain_text = 'Quoth the raven1'                 # plaintext of length 16-bytes.
 plain_text_bytes = text_to_bytes(plain_text)    # These are the bytes.
-print plain_text_bytes
+
 # The byte substitution layer does two things to each byte of the plaintext
 #           1. It swaps the byte for the inverse of the corresponding element
 #              of the finite field GF(256).
@@ -652,6 +652,7 @@ print plain_text_bytes
 # Note: the "vector" representation of the byte has the highest degree term
 #       as the last entry of the vector.
 
+# First we determine the inverse of each element of the block.
 def AES_sbox_inverse(block):
 
     '''
@@ -698,16 +699,12 @@ def AES_sbox_inverse(block):
 
     return output_bytes
 
-print AES_sbox_inverse(plain_text_bytes)
-
 # --------------------------------------
 # Aside: Matrix scaling a column vector
 # --------------------------------------
-
 # In order to perform the affine transformation, we need to perform matrix
 # multiplication. We only require the specific case of 8x8 acting on 8x1.
-
-def matrix_multiply_column(matrix,column):
+def GF2_matrix_multiply_column(matrix,column):
 
     '''
         Input: An nxn matrix (Type, list) and an nx1 column vector (Type, list)
@@ -717,6 +714,30 @@ def matrix_multiply_column(matrix,column):
               which contains n entries.
     '''
 
+    n = len(column)
+    m = len(matrix[0])
+
+    if not n == m:
+        print 'Dimensions do not match.'
+        return None
+
+    output = []
+
+    # Index over the rows.
+    for i in range(0,n):
+
+        output_entry = 0
+
+        # Index over the columns.
+        for j in range(0,n):
+
+            output_entry = ((output_entry + matrix[i][j]*column[j])%2)
+
+        output.append(output_entry)
+
+    return output
+
+# Now we can perform the required affine transformation.
 def AES_sbox_affine(block):
 
     '''
@@ -727,5 +748,78 @@ def AES_sbox_affine(block):
         block. Scaling by a matrix (determined by the AES) and then shifting
         by a vector i.e. XORing with a fixed-byte.
 
+        Note: the algorithm requires the reversal of the bytes in order
+              to multiply by the matrix in the correct manner.
 
     '''
+
+    # S-Matrix and shift vector for the affine transformation.
+    smatrix = [[1,0,0,0,1,1,1,1],
+               [1,1,0,0,0,1,1,1],
+               [1,1,1,0,0,0,1,1],
+               [1,1,1,1,0,0,0,1],
+               [1,1,1,1,1,0,0,0],
+               [0,1,1,1,1,1,0,0],
+               [0,0,1,1,1,1,1,0],
+               [0,0,0,1,1,1,1,1]]
+    v_shift = [1,1,0,0,0,1,1,0]
+
+    # Initialize the output.
+    substitution_layer_block = []
+
+    # Work one byte at a time.
+    for byte in block:
+
+        # Change data type of bits to int for matrix multiplication.
+        byte = list(byte)
+        byte = [int(x) for x in byte]
+
+        # Reverse the byte to match the matrix.
+        byte.reverse()
+
+        # Hit byte with the matrix.
+        byte_smatrix = GF2_matrix_multiply_column(smatrix,byte)
+        # Shift by the vector.
+        byte_sbox = [((x+y)%2) for x,y in zip(byte_smatrix,v_shift)]
+
+        # Undo reverse.
+        byte_sbox.reverse()
+
+        # Change data type to string.
+        byte_sbox_string = ''
+        for x in byte_sbox:
+            byte_sbox_string += str(x)
+
+        # Append the affine transformed block.
+        substitution_layer_block.append(byte_sbox_string)
+
+    return substitution_layer_block
+
+# With the two components of the S-box defined we can put them together
+# to complete the first step of the AES
+def AES_sbox_encrypt(block):
+
+    '''
+        Input: 16-bytes (Type, list)
+        Output: 16-bytes (Type, list)
+
+        This function performs both the GF(256) inversion and affine
+        transformation required of the S-box layer of the AES.
+
+    '''
+
+    block_inverse = AES_sbox_inverse(block)
+    block_inverse_affine = AES_sbox_affine(block_inverse)
+
+    return block_inverse_affine
+
+
+test_block = ['11000010','11000010','11000010','11000010',
+              '11000010','11000010','11000010','11000010',
+              '11000010','11000010','11000010','11000010',
+              '11000010','11000010','11000010','11000010']
+print AES_sbox_encrypt(test_block)
+
+# -----------------------------------
+#   AES-128  Step 2: Diffusion Layer
+# -----------------------------------
