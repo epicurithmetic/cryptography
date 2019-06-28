@@ -598,3 +598,134 @@ def one_character_letterfreq_XOR_decipher(cipher_text_bytes):
 # Ultimately, the belief in the security of AES comes from the fact that it has
 # so far passed the extensive testing to which it has been subjected by the
 # crypto community.
+
+# ----------------------------------------------
+#   Detecting AES in Electronic Code Book (ECB)
+# ----------------------------------------------
+
+# One of the primary weaknesses of AES-ECB is that it encodes four-byte blocks
+# seperately. Therefore any repeated four-byte block in the text will be appear
+# as a repeated four-byte block in the cipher text. Gibberish is unlikely to
+# have repeated four-byte blocks. But english plaintext could well have
+# repeated four-byte blocks. This simple obeservation can allow us to detect
+# AES in the ECB mode of operation.
+
+# --------------------------
+#   Encrpytion with AES-128
+# --------------------------
+
+# Encrypting data with the AES requires a block of three steps repeated a
+# number of times. In the case of AES-128 the block of three steps will be
+# repeated ten times.
+
+# For now we will discuss how to encrypt 16-byte strings. Once we know how to
+# do this, there are a number of options (Modes of Operation) for AES to
+# encrypt longer strings of plaintext. We will also assume the key is 128-bits
+# i.e. the key length is 16-byte = length of plaintext block.
+
+# ---------------------------------------------------
+#   AES-128  Step 1: Byte Substitution Layer (S-Box)
+# ---------------------------------------------------
+
+plain_text = 'Quoth the raven1'                 # plaintext of length 16-bytes.
+plain_text_bytes = text_to_bytes(plain_text)    # These are the bytes.
+print plain_text_bytes
+# The byte substitution layer does two things to each byte of the plaintext
+#           1. It swaps the byte for the inverse of the corresponding element
+#              of the finite field GF(256).
+#           2. Performs an affine mapping on each of the resulting bytes.
+#              First the string is multiplied by the matrix:
+#
+#                  M = [[1,0,0,0,1,1,1,1],
+#                        [1,1,0,0,0,1,1,1],
+#                        [1,1,1,0,0,0,1,1],
+#                        [1,1,1,1,0,0,0,1],
+#                        [1,1,1,1,1,0,0,0],
+#                        [0,1,1,1,1,1,0,0],
+#                        [0,0,1,1,1,1,1,0],
+#                        [0,0,0,1,1,1,1,1]]
+#
+#               Finally, each byte is shifted by the following vector
+#
+#                   V = [1,1,0,0,0,1,1,0]
+#
+# Note: the "vector" representation of the byte has the highest degree term
+#       as the last entry of the vector.
+
+def AES_sbox_inverse(block):
+
+    '''
+        Input: block of 16-bytes (Type, list)
+        Output: block of 16-bytes (Type, list)
+
+        This function interprets each byte as an element of GF(256) and
+        maps it to the inverse in that field. The byte 00000000 does not
+        have an inverse in GF(256). It is defiend to be sent to itself.
+
+        This function performs one of the two stages of the byte substitution
+        layer of the AES encryption scheme.
+
+    '''
+
+    output_bytes = []
+    for x in block:
+
+        # In order to use the GF(256) function from the number theory library
+        # we need to remove any leading zeroes on the bytes.
+        x = list(x)
+        leading_zeroes = True
+        while leading_zeroes == True:
+            if len(x) == 1:
+                leading_zeroes = False
+            elif x[0] == '0':
+                del x[0]
+            else:
+                leading_zeroes = False
+
+        # Return to Type string.
+        x_cleaned = ''
+        for i in x:
+            x_cleaned += i
+
+        # Calculate the inverse
+        x_inverse = GF256_inverse(x_cleaned)
+
+        # Pad the inverse to a full 8-bit byte.
+        x_inverse = '0'*(8 - len(x_inverse)) + x_inverse
+
+        # Append the new byte to the output.
+        output_bytes.append(x_inverse)
+
+    return output_bytes
+
+print AES_sbox_inverse(plain_text_bytes)
+
+# --------------------------------------
+# Aside: Matrix scaling a column vector
+# --------------------------------------
+
+# In order to perform the affine transformation, we need to perform matrix
+# multiplication. We only require the specific case of 8x8 acting on 8x1.
+
+def matrix_multiply_column(matrix,column):
+
+    '''
+        Input: An nxn matrix (Type, list) and an nx1 column vector (Type, list)
+        Output: An nx1 column vector (Type, list)
+
+        Note: The matrix is assumed to be a list containing n lists, each of
+              which contains n entries.
+    '''
+
+def AES_sbox_affine(block):
+
+    '''
+        Input: block of 16 bytes (Type, list)
+        Output: block of 16 bytes (Type, list)
+
+        This function perfoms an affine transformation on each byte of the
+        block. Scaling by a matrix (determined by the AES) and then shifting
+        by a vector i.e. XORing with a fixed-byte.
+
+
+    '''
