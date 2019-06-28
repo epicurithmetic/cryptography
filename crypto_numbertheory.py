@@ -107,7 +107,6 @@ def isit_prime(n):
     else:
         return True
 
-
 # ---------------------------------------------------------------------------
 #                          Euclidean Algorithm
 # ---------------------------------------------------------------------------
@@ -832,9 +831,6 @@ def GF2_polynomial_sum(poly1, poly2):
 
     return sum
 
-# print 'Sum test:'
-# print GF2_polynomial_sum('11101','1001')
-
 # Polynomial multiplication in GF(2)
 def GF2_polynomial_product(poly1, poly2):
 
@@ -887,9 +883,6 @@ def GF2_polynomial_product(poly1, poly2):
 
     return product
 
-# print 'Product test:'
-# print GF2_polynomial_product('11101','1001')
-
 # Polynomial division in GF(2)
 def GF2_polynomial_remainder(dividend,divisor):
 
@@ -932,9 +925,6 @@ def GF2_polynomial_remainder(dividend,divisor):
         dividend = GF2_polynomial_sum(dividend, shifted_divisor)
 
     return dividend
-
-# print 'Remainder test:'
-# print GF2_polynomial_remainder('11101','1001')
 
 # ... more GF(2) polynomial division, this time returning the quotient
 def GF2_polynomial_quotient(dividend,divisor):
@@ -990,9 +980,6 @@ def GF2_polynomial_quotient(dividend,divisor):
         quotient_str += str(x)
 
     return quotient_str
-
-# print 'Quotient test:'
-# print GF2_polynomial_quotient('11101','1001')
 
 # Polynomial GCD in GF(2)
 def GF2_euclid_gcd(poly1, poly2):

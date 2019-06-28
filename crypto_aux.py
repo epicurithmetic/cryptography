@@ -543,7 +543,6 @@ def one_character_XOR_search_decipher(cipher_text):
         else:
             pass
 
-
 # The next instance of the XOR decipher function simply returns the key.
 # Also the first to employ character frequency rather than word frequency.
 def one_character_letterfreq_XOR_decipher(cipher_text_bytes):
@@ -579,3 +578,23 @@ def one_character_letterfreq_XOR_decipher(cipher_text_bytes):
             pass
 
     return max_score_key
+
+# ---------------------------------------------------------------------------
+#                   Advanced Encryption Standard (AES)
+# ---------------------------------------------------------------------------
+
+# This cipher is the most widely used symmetric-cipher. It is applied by the US
+# government to encrypt SECRET and TOP-SECRET data. As of May 2009 the only
+# attacks against AES have been side channel attacks. That is, attacks which
+# have used flaws in the implementation, rather than flaws in the algorithm
+# itself. Nothing better than brute-force has been (publically) done.
+
+# Snowden documents stated that the NSA were considering the use of "Tau
+# statistics" in their efforts to test AES.
+
+# Although a lot of theoretical research has been done on attacking AES, none
+# of this research has yielded anything better than > billion year run time.
+
+# Ultimately, the belief in the security of AES comes from the fact that it has
+# so far passed the extensive testing to which it has been subjected by the
+# crypto community.
