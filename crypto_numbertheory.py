@@ -745,7 +745,7 @@ def hex_to_base64(hex_string):
     return base64_string
 
 # ---------------------------------------------------------------------------
-#                          Arithmetic over p=2
+#                       Arithmetic over p = 2
 # ---------------------------------------------------------------------------
 
 # Code for doing arithmetic in GF(2) and its finite extensions. For cryptography
