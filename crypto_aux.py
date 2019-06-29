@@ -882,4 +882,56 @@ def AES_diffusion_row(state_matrix):
 
     return output_state_matrix
 
-# The shift column sublayer is more complex in nature. 
+# The shift column sublayer is more complex in nature.
+# Each *column* of the state matrix is multiplied by the following matrix
+#
+#       rijndael_matrix = [ [x, x+1, 1, 1],
+#                           [1, x, x+1, 1],
+#                           [1, 1, x, x+1],
+#                           [x+1, 1, 1, x] ]
+#
+# All of the arithmetic is done in GF(256).
+
+rijndael_matrix = [ ['10', '11', '1', '1'],
+                    ['1', '10', '11', '1'],
+                    ['1', '1', '10', '11'],
+                    ['11', '1', '1', '10'] ]
+
+test_input = ['11011011','00010011','01010011','01000101']
+test_output = ['10001110','01001101','10100001','10111100']
+
+def GF256_matrix_multiply_column(matrix,column):
+
+    '''
+        Input: An nxn matrix with entries in GF(256) and an nx1 column
+               vector with entries in GF(256). (Type, list)
+        Output: nx1 column vector with entries in GF(256). (Type, list)
+
+        Note: elements of GF(256) are strings (Type, str) of binary with
+              max length 8.
+
+    '''
+
+    n = len(column)
+    m = len(matrix[0])
+
+    if not n == m:
+        print 'Dimensions do not match.'
+        return None
+
+    output = []
+
+    # Index over the rows.
+    for i in range(0,n):
+
+        output_entry = '0'
+
+        # Index over the columns.
+        for j in range(0,n):
+            output_entry = GF2_polynomial_sum(output_entry, GF256_multiplication(matrix[i][j],column[j]))
+
+        output.append(output_entry)
+
+    return output
+
+print GF256_matrix_multiply_column(rijndael_matrix,test_input)
