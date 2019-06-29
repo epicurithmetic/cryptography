@@ -627,8 +627,19 @@ def one_character_letterfreq_XOR_decipher(cipher_text_bytes):
 #   AES-128  Step 1: Byte Substitution Layer (S-Box)
 # ---------------------------------------------------
 
+# Here is some plaintext from Edgar Allan Poe:
 plain_text = 'Quoth the raven1'                 # plaintext of length 16-bytes.
+# The AES protocol works on the bytes.
 plain_text_bytes = text_to_bytes(plain_text)    # These are the bytes.
+# Some the AES protocol works on the following matrix presentation of the bytes.
+plain_text_matrix = []
+for i in range(0,4):
+    plain_text_matrix.append(plain_text_bytes[4*i:4*(i+1)])
+
+# print plain_text
+# print plain_text_bytes
+# print plain_text_matrix
+
 
 # The byte substitution layer does two things to each byte of the plaintext
 #           1. It swaps the byte for the inverse of the corresponding element
@@ -699,11 +710,11 @@ def AES_sbox_inverse(block):
 
     return output_bytes
 
-# --------------------------------------
-# Aside: Matrix scaling a column vector
-# --------------------------------------
+# ------------------------------------------------
+# Aside: Matrix scaling a column vector over GF(2)
+# ------------------------------------------------
 # In order to perform the affine transformation, we need to perform matrix
-# multiplication. We only require the specific case of 8x8 acting on 8x1.
+# multiplication. We only require the specific case of nxn acting on nx1.
 def GF2_matrix_multiply_column(matrix,column):
 
     '''
@@ -813,13 +824,62 @@ def AES_sbox_encrypt(block):
 
     return block_inverse_affine
 
-
-test_block = ['11000010','11000010','11000010','11000010',
-              '11000010','11000010','11000010','11000010',
-              '11000010','11000010','11000010','11000010',
-              '11000010','11000010','11000010','11000010']
-
-
 # -----------------------------------
 #   AES-128  Step 2: Diffusion Layer
 # -----------------------------------
+
+# The diffusion layer of AES consists of two sublayers: (i) Shiftrows sublayer
+# and the (ii) Mixcolumn sublayer.
+
+# The shift rows sublayer acts on each row of the 4x4 state matrix.
+# First row:  No shift
+# Second row: Three positions to the right (equiv. One to the left.)
+# Third row:  Two positions to the right (equiv. Two to the left.)
+# Fourth row: One positions to the right (equiv. Three to the left.)
+
+def AES_diffusion_row(state_matrix):
+
+    '''
+        Input: 4x4 state matrix (Type, list)
+        Output: 4x4 state matrix (Type,list)
+
+        This function is part of the AES diffusion layer. Performs the
+        following transformations on the rows:
+
+                Row 1: No shift
+                Row 2: Three positions to the right
+                Row 3: Two positions to the right
+                Row 4: One position to the right
+
+
+    '''
+    # Initialize the output.
+    output_state_matrix = []
+
+    # Row 1 has no shift.
+    output_state_matrix.append(state_matrix[0])
+
+    # Row 2 is shifted three positions to the right.
+    output_row_two = []
+    for i in range(0,4):
+        output_row_two.append(state_matrix[1][(1+i)%4])
+
+    output_state_matrix.append(output_row_two)
+
+    # Row 3 is shifted three positions to the right.
+    output_row_three = []
+    for i in range(0,4):
+        output_row_three.append(state_matrix[2][(2+i)%4])
+
+    output_state_matrix.append(output_row_three)
+
+    # Row 2 is shifted three positions to the right.
+    output_row_four = []
+    for i in range(0,4):
+        output_row_four.append(state_matrix[3][(3+i)%4])
+
+    output_state_matrix.append(output_row_four)
+
+    return output_state_matrix
+
+# The shift column sublayer is more complex in nature. 
