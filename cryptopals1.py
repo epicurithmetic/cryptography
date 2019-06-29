@@ -285,10 +285,9 @@ file.close()
 for i in range(0,204):
     file_lines[i] = file_lines[i][:-1]
 
-# global variables to store the max number of repeated bytes and the line
-# of the file on which the max count occurs.
-max_repeated_bytes = 0
-max_repeated_bytes_line = 0
+# global variables to store the max number of repeated 16-byte blocks.
+max_repeated_block = 0
+max_repeated_block_line = 0
 
 # Now we turn the HEX data into the corresponding bytes.
 for line in file_lines:
@@ -300,39 +299,40 @@ for line in file_lines:
     else:
         line_bytes[0] = '0'*(8 - len(line_bytes[0])) + line_bytes[0]
 
-    # Now we need to count the number of repeated bytes in each
-    # line of the file.
+    # Now we have to group the bytes into 16-byte blocks.
+    # In this case there are 160 bytes per line i.e. there are 10 blocks of
+    # 16-bytes.
+    sixteen_byte_blocks = []
+    for i in range(0,10):
+        sixteen_byte_blocks.append(line_bytes[i*16:(i+1)*16])
 
-    repeated_bytes_count = 0
+    repeated_block_count = 0
+    for i in range(0,10):
+        for j in range(i+1,10):
 
-    # Note this method massively overcounts the number of repeated bytes.
-    # But it over counts the same for all lines. So the max will be correct.
-    for i in range(0,len(line_bytes)):
-
-        for j in range(i+1, len(line_bytes)):
-
-            if line_bytes[i] == line_bytes[j]:
-                repeated_bytes_count += 1
+            if sixteen_byte_blocks[i] == sixteen_byte_blocks[j]:
+                repeated_block_count += 1
             else:
                 pass
 
-    if repeated_bytes_count > max_repeated_bytes:
-        max_repeated_bytes = repeated_bytes_count
-        # Need to add 1 due to the index of lists and numbering of lines.
-        max_repeated_bytes_line = file_lines.index(line) + 1
-    else:
-        pass
 
-print 'Line %s has the largest number of repeated bytes by a factor of three.' % (max_repeated_bytes_line)
-print 'Therefore we may conclude it is this line that has been encoded with'
-print 'with Advanced Encryption Standard in the Electronic Code Book mode.\n'
+    if repeated_block_count > max_repeated_block:
+        max_repeated_block = repeated_block_count
+        max_repeated_block_line = file_lines.index(line) + 1
 
-# Notice that it is not that the other lines don't have repeated bytes, but that
-# the number of repeated bytes is significantly larger in the encoded line
-# than in the other lines of (I assume) gibberish.
+
+print 'Line %s has the most repeated 16-byte blocks.' % max_repeated_block_line
+print 'In fact, this code shows that it is the only line with repeated'
+print '16-byte blocks. None of the other lines have any repeated blocks.'
+print 'Thus highlighting the weakness of the ECB mode of operation - that it'
+print 'can be very easy to detect this mode of encrpytion.'
 
 
 # ---------------------------------------------------------------------------
 #                   Cryptopals Challenge Set 1: Complete
 # ---------------------------------------------------------------------------
-print '\nCryptopals Challenge Set 1: Complete.\n'
+print '\n'
+print ' '+'-'*38
+print '| Cryptopals Challenge Set 1: Complete |'
+print ' '+'-'*38
+print '\n'
