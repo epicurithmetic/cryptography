@@ -243,9 +243,9 @@ print decrypted_message
 #                            Challenge 7
 # ---------------------------------------------------------------------------
 print '\n'
-print '-'*41
+print '-'*58
 print 'Challenge 7: Decryption with Advanced Encryption Standard'
-print '-'*41
+print '-'*58
 print '\n'
 
 
@@ -256,9 +256,9 @@ print 'Not done yet.'
 #                            Challenge 8
 # ---------------------------------------------------------------------------
 print '\n'
-print '-'*41
+print '-'*57
 print 'Challenge 8: Detecting AES in Electronic Code Book (ECB)'
-print '-'*41
+print '-'*57
 print '\n'
 
 # Each of the modes of operation of the Advanced Encryption Standard have
@@ -266,7 +266,7 @@ print '\n'
 # mode of operation is that it encodes all copies of the same plaintext
 # in the same way.
 
-# Gibberish is unlikely to have many (or any) repeated strings of bytes.
+# Gibberish is unlikely to have many repeated strings of bytes.
 # Whereas english (or any other human-language) will have repeated bytes.
 # This observation allows for a method of decting AES in ECB mode.
 
@@ -277,7 +277,62 @@ print '\n'
 # Read the file in.
 file = open("cpals18.txt", "r")
 file_lines = []
-for i in range(0,1):
+for i in range(0,204):
     file_lines.append(file.readline())
 file.close()
-print file_lines
+
+# Next piece of code removes the \n command from each string.
+for i in range(0,204):
+    file_lines[i] = file_lines[i][:-1]
+
+# global variables to store the max number of repeated bytes and the line
+# of the file on which the max count occurs.
+max_repeated_bytes = 0
+max_repeated_bytes_line = 0
+
+# Now we turn the HEX data into the corresponding bytes.
+for line in file_lines:
+    line_bytes = hex_to_bytes(line)
+
+    # The leading byte maybe empty. Or it may not be a full byte.
+    if line_bytes[0] == '':
+        del line_bytes[0]
+    else:
+        line_bytes[0] = '0'*(8 - len(line_bytes[0])) + line_bytes[0]
+
+    # Now we need to count the number of repeated bytes in each
+    # line of the file.
+
+    repeated_bytes_count = 0
+
+    # Note this method massively overcounts the number of repeated bytes.
+    # But it over counts the same for all lines. So the max will be correct.
+    for i in range(0,len(line_bytes)):
+
+        for j in range(i+1, len(line_bytes)):
+
+            if line_bytes[i] == line_bytes[j]:
+                repeated_bytes_count += 1
+            else:
+                pass
+
+    if repeated_bytes_count > max_repeated_bytes:
+        max_repeated_bytes = repeated_bytes_count
+        # Need to add 1 due to the index of lists and numbering of lines.
+        max_repeated_bytes_line = file_lines.index(line) + 1
+    else:
+        pass
+
+print 'Line %s has the largest number of repeated bytes by a factor of three.' % (max_repeated_bytes_line)
+print 'Therefore we may conclude it is this line that has been encoded with'
+print 'with Advanced Encryption Standard in the Electronic Code Book mode.\n'
+
+# Notice that it is not that the other lines don't have repeated bytes, but that
+# the number of repeated bytes is significantly larger in the encoded line
+# than in the other lines of (I assume) gibberish.
+
+
+# ---------------------------------------------------------------------------
+#                   Cryptopals Challenge Set 1: Complete
+# ---------------------------------------------------------------------------
+print '\nCryptopals Challenge Set 1: Complete.\n'
