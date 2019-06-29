@@ -238,3 +238,46 @@ for x in decrypted_text_data:
     decrypted_message += chr(x)
 print '\n'
 print decrypted_message
+
+# ---------------------------------------------------------------------------
+#                            Challenge 7
+# ---------------------------------------------------------------------------
+print '\n'
+print '-'*41
+print 'Challenge 7: Decryption with Advanced Encryption Standard'
+print '-'*41
+print '\n'
+
+
+print 'Not done yet.'
+
+
+# ---------------------------------------------------------------------------
+#                            Challenge 8
+# ---------------------------------------------------------------------------
+print '\n'
+print '-'*41
+print 'Challenge 8: Detecting AES in Electronic Code Book (ECB)'
+print '-'*41
+print '\n'
+
+# Each of the modes of operation of the Advanced Encryption Standard have
+# their weaknesses and strengths. One of the primary weaknesses of the ECB
+# mode of operation is that it encodes all copies of the same plaintext
+# in the same way.
+
+# Gibberish is unlikely to have many (or any) repeated strings of bytes.
+# Whereas english (or any other human-language) will have repeated bytes.
+# This observation allows for a method of decting AES in ECB mode.
+
+# In this exercise we have a number of lines of HEX encoded strings
+# one of which has been encoded with AES-ECB and we are tasked with
+# detecting which one it is.
+
+# Read the file in.
+file = open("cpals18.txt", "r")
+file_lines = []
+for i in range(0,1):
+    file_lines.append(file.readline())
+file.close()
+print file_lines
