@@ -1,7 +1,9 @@
 # Number theory related functions.
 
+import time
+
 # ---------------------------------------------------------------------------
-#                        Primes and Primality Tests
+#                Primes, Primality Testing, and Factorisation
 # ---------------------------------------------------------------------------
 
 # List primes less than an upper-bound.
@@ -92,23 +94,24 @@ def isit_prime(n):
     # Boolean which will stop loop if divisor found.
     has_divisor = False
 
-    d = 2
+    d = 3
     while d <= divisor_bound:
         if (n % d) == 0:
             has_divisor = True
             break
         else:
-            d = d + 1
+            d = d + 2
 
-    if n == 2:
+    if (n == 2):
         return True
+    elif (n % 2 == 0):
+        return False
     elif n == 1:
         return False
     elif has_divisor == True:
         return False
     else:
         return True
-
 
 # Now that we can detect primes, we can begin to calculate the prime
 # factorisation of an integer. For this we will need:
@@ -161,10 +164,11 @@ def divisors(n):
 
     divisors = [1,n]
 
-    for i in range(2,n):
+    for i in range(2,int(newton_sqrt(n)+1)):
 
         if (n%i) == 0:
             divisors.append(i)
+            divisors.append(n/i)
         else:
             pass
 
@@ -192,7 +196,13 @@ def prime_factorisation(n):
         Input: Integer (Type, integer) whose prime factorisation is sought.
         Output: Prime factorisation (Type, str) of input integer.
 
-        Okay upto n = 100,000,000
+
+        Okay upto n = 3000235347293732ish (Quadrillions = 1000s of Trillion)
+        It takes, approximately, 17 seconds to factor the following integer.
+            Example: Prime factorisation of 3 Quadrillion ...
+        3000235347293732 = 2^2 x 31 x 137 x 42643 x 4141573
+
+        Another factor of 10 yields a memory error on my laptop.
 
     '''
 
