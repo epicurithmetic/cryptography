@@ -1,7 +1,5 @@
 # Number theory related functions.
 
-import time
-
 # ---------------------------------------------------------------------------
 #                Primes, Primality Testing, and Factorisation
 # ---------------------------------------------------------------------------
