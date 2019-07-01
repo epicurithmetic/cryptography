@@ -102,10 +102,111 @@ def isit_prime(n):
 
     if n == 2:
         return True
+    elif n == 1:
+        return False
     elif has_divisor == True:
         return False
     else:
         return True
+
+
+# Now that we can detect primes, we can begin to calculate the prime
+# factorisation of an integer. For this we will need:
+#               (i) Detect divisors
+#              (ii) Calculate highest powers of divisors
+
+def exponent_of_divisor(n,d):
+
+    '''
+        Input: Integers (Type, int).
+        Output: (Type, int)
+
+        This function returns the highest power of d that divides n.
+
+    '''
+
+    count = 0
+
+    while ((n%d)==0):
+        n = n/d
+        count +=1
+
+    return count
+
+def isit_divisor(n,d):
+
+    '''
+        Input: Two (Type, integers)
+        Output: True or False (Type, Boolean)
+
+        Output True if d divides n, False otherwise.
+    '''
+
+    if d == 0:
+        return False
+    elif (n%d) == 0:
+        return True
+    else:
+        return False
+
+def divisors(n):
+
+    '''
+        Input: Integer (Type, int)
+        Output: List of integers (Type, list)
+
+        Output is the list of divisors of the input n.
+
+    '''
+
+    divisors = [1,n]
+
+    for i in range(2,n):
+
+        if (n%i) == 0:
+            divisors.append(i)
+        else:
+            pass
+
+    return divisors
+
+def prime_divisors(n):
+
+    ''' Input: Integer (Type, int) whose prime divisors are sought
+        Output: List (Type, list) of prime divisors
+    '''
+
+    divisors_list = divisors(n)
+    prime_divisors = []
+    for d in divisors_list:
+        if isit_prime(d) == True:
+            prime_divisors.append(d)
+        else:
+            pass
+
+    return prime_divisors
+
+def prime_factorisation(n):
+
+    '''
+        Input: Integer (Type, integer) whose prime factorisation is sought.
+        Output: Prime factorisation (Type, str) of input integer.
+
+        Okay upto n = 100,000,000
+
+    '''
+
+    prime_divisor_list = prime_divisors(n)
+    exponents = []
+    for i in prime_divisor_list:
+        exponents.append(exponent_of_divisor(n,i))
+
+    prime_factorisation = ''
+    for i,j in zip(prime_divisor_list,exponents):
+        prime_factorisation += ('%s^%s x ' % (str(i),str(j)))
+
+    print '\n'
+    return ('%s = ' % str(n)) + prime_factorisation[:-3]
 
 # ---------------------------------------------------------------------------
 #                          Euclidean Algorithm
