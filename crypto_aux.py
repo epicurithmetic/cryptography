@@ -1128,7 +1128,6 @@ def letter_frequency_score(text):
 # With the ability to score text in this way, we can now write a function
 # which will break the Caesar cipher without us having to read through
 # 26 blocks of gibberish.
-
 def caesar_break(cipher_text):
 
     '''
@@ -1159,10 +1158,11 @@ def caesar_break(cipher_text):
 
     return plaintext,min_score_key
 
+# Example:
 print caesar_break(test_long_ciphertext)
 
 # Notice: with the length of the poem by Dyaln Thomas, the frequency score
 #         for the plaintext is significantly different with the correct key.
-#         nothing else comes close. In the smaller the example, the text is
+#         Nothing else comes close. In the smaller example, the text is
 #         still recovered, even though the difference in score is not very
-#         very significant.
+#         very significant. This may not work with small messages.
