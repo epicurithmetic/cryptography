@@ -1316,3 +1316,65 @@ GF256_inverse_dict = {
 "f3":"34","f4":"68","f5":"46","f6":"3","f7":"8c","f8":"dd","f9":"9c","fa":"7d",
 "fb":"a0","fc":"cd","fd":"1a","fe":"41","ff":"1c"
 }
+
+# ---------------------------------------------------------------------------
+#                      Arithmetic in Gaussian Integers
+# ---------------------------------------------------------------------------
+
+class Gaussian_Integers:
+
+    '''
+        Objects of this class are Gaussian Integers. With integer real and
+        imaginary component.
+
+    '''
+
+    # This tells us that in order to define an object in this class we need
+    # to specify two inputs: the real and imaginary components of the Gaussian
+    # integer. We assume real and imaginary have Type int.
+    def __init__(self,real,imaginary):
+        self.real = real
+        self.imaginary = imaginary
+
+    # This returns the norm of the Gaussian integer.
+    def norm(self):
+        norm = (self.real ** 2)+(self.imaginary ** 2)
+        return norm
+
+    # Is the object/instance prime? What is the factorisation?
+    def isit_Gaussianprime(self):
+
+        # If both components are non-zero, then primality is equivalent
+        # to having a prime norm.
+        if not ((self.real == 0) or (self.imaginary == 0)):
+            return isit_prime(self.norm())
+        # If the real part is 0, then primality is equivalent to the imaginary
+        # component being a prime of the form 4n+3.
+        elif (self.real == 0):
+            if ( isit_prime(abs(self.imaginary)) ) and ((self.imaginary % 4) == 3):
+                return True
+            else:
+                return False
+        # Otherwise the Gaussian integer will not be prime.
+        else:
+            return False
+
+    # Multiply Gaussian Integers.
+    def gaussian_multiplication(self,g):
+        # Product of self and specified Gaussian integer.
+        return Gaussian_Integers(((self.real*g.real) - (self.imaginary*g.imaginary)),((self.real*g.imaginary) + (self.imaginary*g.real)))
+
+    # Is it a unit?
+    def isit_unit(self):
+        if self.norm() == 1:
+            return True
+        else:
+            return False
+
+# Ideas: Use a polynomial to define an object in a class Algebraic Integers
+#        This class could have functions (methods) which give information about
+#        the monogenic ring this polynomial generates.
+#        (i) is it the ring of integers of the field?
+#       (ii) what is the group of units?
+#      (iii) which primes ramify?
+#       (iv) ... other number theoretically interesting things?
