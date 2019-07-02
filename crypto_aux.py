@@ -934,4 +934,235 @@ def GF256_matrix_multiply_column(matrix,column):
 
     return output
 
-print GF256_matrix_multiply_column(rijndael_matrix,test_input)
+#print GF256_matrix_multiply_column(rijndael_matrix,test_input)
+
+
+
+# ---------------------------------------------------------------------------
+#                    Math 3301: Cryptography Exercises
+# ---------------------------------------------------------------------------
+
+# Here I collect a number of the cryptography exercies used in the cryptography
+# part of Math3301: Number Theory and Cryptography.
+
+# ----------------------------------------
+# Caesar Cipher Encryption and Decryption
+# ----------------------------------------
+
+# This cipher encodes the english alphabet as [a,0] [b,1], [c,2], ..., [z,25].
+# Adds a fixed number k (the key) to each number, reducdes mod 26 and turns
+# reverses the alphabet-to-number dictionary.
+
+# First let's create a dictionary to store the alphabet-to-number assignment.
+# Lower-case letters are ASCII 97 - 122. Upper-case are 65 - 90
+caesar_cipher_dict = {' ':26, 26:' '}
+for i in range(0,26):
+    # This maps alphabet to number.
+    caesar_cipher_dict[chr(97+i)] = i
+
+    # This maps number to alphabet.
+    caesar_cipher_dict[i] = chr(97+i)
+
+# This function does the work.
+def caesar_cipher(string, key, MODE):
+
+    '''
+        Input: string of text (Type, string) and a key (Type, int). MODE tells
+               the code whether or not to encrypt or decrypt. MODE takes
+               values 'e' (encrypt) and 'd' for decrypt.
+        Output: string of text encrypted using the Caeser cipher with the
+                key input into the function.
+
+        Note: We account for 'space' in the plaintext by adding another
+              element to the dictionary. Thus we need to reduce mod 27.
+
+        Note: this assumes only lower-case letters are used. If you want
+        to include upper-case letters use a dictionary [0,51] and
+        reduce mod 52.
+
+    '''
+
+    if not (MODE == 'e' or MODE == 'd'):
+        x = 'Please say whether you would like to encrypt ("e") the data or'
+        y = ' decrypt ("d") the data. Check doc-string for clarification.'
+        return x+y
+    else:
+        pass
+
+    # We refer to the length of the plaintext a number of times.
+    l = len(string)
+
+    # Change the data type of the plaintext. This is to avoid the problem of
+    # encoded numbers having more than one digit - as they do in this case.
+    string = list(string)
+
+    # Turn each element of the string into the corresponding integer.
+    for i in range(0, l):
+        string[i] = caesar_cipher_dict[string[i]]
+
+    # Encrypt or decrypt depending on mode:
+    if MODE == 'e':
+        for i in range(0,l):
+            string[i] = ((string[i] + key) % 27)
+    elif MODE == 'd':
+        for i in range(0,l):
+            string[i] = ((string[i] - key) % 27)
+
+    # Map back to the alphabet.
+    for i in range(0,l):
+        string[i] = caesar_cipher_dict[string[i]]
+
+    # Change data type back to string.
+    encrypted_string = ''
+    for x in string:
+        encrypted_string += x
+
+    return encrypted_string
+
+test_plaintext = 'attack at dawn'
+test_key = 7
+test_ciphertext = caesar_cipher(test_plaintext,7,'e')
+
+dylan_thomas = ['do not go gentle into that good night ',
+'old age should burn and rave at close of day ',
+'rage rage against the dying of the light ',
+
+'though wise men at their end know dark is right ',
+'because their words had forked no lightning they ',
+'do not go gentle into that good night ',
+
+'good men the last wave by crying how bright ',
+'their frail deeds might have danced in a green bay ',
+'rage rage against the dying of the light ',
+
+'wild men who caught and sang the sun in flight ',
+'and learn too late they grieve it on its way ',
+'do not go gentle into that good night ',
+
+'grave men near death who see with blinding sight ',
+'blind eyes could blaze like meteors and be gay ',
+'rage rage against the dying of the light ',
+
+'and you my father there on the sad height ',
+'curse bless me now with your fierce tears i pray ',
+'do not go gentle into that good night ',
+'rage rage against the dying of the light']
+
+test_long_plaintext = ''
+for line in dylan_thomas:
+    test_long_plaintext += line
+test_long_ciphertext = caesar_cipher(test_long_plaintext,7,'e')
+
+# ---------------------------
+# Breaking the Caesar Cipher
+# ---------------------------
+
+# There are two options when breaking this encryption, one more sophisticated
+# than the other. We could simply loop over all keys and read all of the
+# possible outputs - One of which will be readable.
+# for k in range(0,27):
+#     # Use MODE = decrypt
+#     print caesar_cipher(test_long_ciphertext,k,'d'),'Key: ', k
+
+# For long texts this can mean reading through a lot of gibberish. So it would
+# be good to write a function which detects the plaintext among the gibberish.
+# Each character of the alphabet has a known expected frequency for a large
+# enough plaintext. So a function would be written which scores the text
+# according to the difference between the letter frequency of the text and the
+# expected letter frequency of an english text. This function should be
+# minimised on the correct plaintext.
+def letter_frequency_score(text):
+
+    '''
+        Input: string of english alphabet with spaces (Type, string)
+        Output: a measure of the deviation from english (Type, float)
+
+        Using the expected frequencies of letters in written english, we score
+        the text by taking the absolute value of the difference between
+        the measured and expected frequencies.
+
+    '''
+
+    # This will measure the "english-ness" of the text.
+    score = 0
+
+    expected_letter_frequencies = {'e': 0.1202, 't': 0.0910, 'a': 0.0812, 'o': 0.0768,
+                                   'i': 0.0731, 'n': 0.0695, 's': 0.0628, 'r': 0.0602,
+                                   'h': 0.0592, 'd': 0.0432, ' ': 0.1918,
+                                   'l': 0.0398, 'u': 0.0288, 'c': 0.0271, 'm': 0.0261,
+                                   'f': 0.0230, 'y': 0.0211, 'w': 0.0209, 'g': 0.0203,
+                                   'p': 0.0182, 'b': 0.0149, 'v': 0.0111, 'k': 0.0069,
+                                   'x': 0.0017, 'q': 0.0011, 'j': 0.0010, 'z': 0.0007,}
+
+    # Now we measure the frequencies of the letters in the text.
+    measured_letter_frequencies = {}
+    alphabet = ['e','t','a','o','i','n','s','r','h','d',' ','l','u','c','m',
+                'f','y','w','g','p','b','v','k','x','q','j','z']
+
+    # We need the length to get the measured frequency.
+    l = len(text)
+    text = list(text)
+
+    for character in alphabet:
+
+        # Count number of instances of the character.
+        count = 0
+        for i in range(0,l):
+            if text[i] == character:
+                count+=1
+            else:
+                pass
+
+        # Calculate fraction of total length.
+        measured_frequency = float(count)/float(l)
+
+        # Calculate the absolute value of the difference between the measured
+        # and the expected frequency
+        character_score = abs(expected_letter_frequencies[character] - measured_frequency)
+
+        # Add this to the dictionary.
+        score += character_score
+
+    return score
+
+# With the ability to score text in this way, we can now write a function
+# which will break the Caesar cipher without us having to read through
+# 26 blocks of gibberish.
+
+def caesar_break(cipher_text):
+
+    '''
+        Input: cipher_text (Type, string) to be decrypted.
+        Output: plaintext message (Type, string)
+
+        This function picks the key with the smallest letter frequency
+        difference to that of the expected frequency of written english.
+
+    '''
+
+    L = len(cipher_text)
+
+    min_score = L
+    min_score_key = 0
+    plaintext = ''
+
+    for k in range(0,27):
+        k_plaintext = caesar_cipher(cipher_text,k,'d')
+        score = letter_frequency_score(k_plaintext)
+        print score
+        if score < min_score:
+            min_score = score
+            min_score_key = k
+            plaintext = k_plaintext
+        else:
+            pass
+
+    return plaintext,min_score_key
+
+print caesar_break(test_long_ciphertext)
+
+# Notice: with the length of the poem by Dyaln Thomas, the frequency score
+#         for the plaintext is significantly different with the correct key.
+#         nothing else comes close. In the smaller the example, the text is
+#         still recovered, even though the difference in score is not very
+#         very significant.
