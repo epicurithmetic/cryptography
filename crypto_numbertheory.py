@@ -1378,3 +1378,8 @@ class Gaussian_Integers:
 #       (ii) what is the group of units?
 #      (iii) which primes ramify?
 #       (iv) ... other number theoretically interesting things?
+
+# Define a class whose objects are rings of algebraic integers whose type
+# is a class so that one can then refer to the elements of that ring as
+# the objects of the class defining the ring. Elements of the ring will be
+# an object with in a class with in a class. 
