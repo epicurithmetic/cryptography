@@ -31,6 +31,23 @@ def sieve_eratosthenes(n):
         count += 1
     return primes
 
+
+# Better sieve?
+# numbers = range(2,200+1)
+#
+# i = 2
+#
+# while i < len(numbers):
+#
+#   multiple = 2
+#   while multiple*i <= 200:
+#     if multiple*i in numbers:
+#       numbers.remove(multiple*i)
+#     multiple += 1
+#
+#   i += 1
+
+
 # Number of primes less than an upper-bound.
 def landau_primecount(n):
 
@@ -1382,4 +1399,4 @@ class Gaussian_Integers:
 # Define a class whose objects are rings of algebraic integers whose type
 # is a class so that one can then refer to the elements of that ring as
 # the objects of the class defining the ring. Elements of the ring will be
-# an object with in a class with in a class. 
+# an object with in a class with in a class.
