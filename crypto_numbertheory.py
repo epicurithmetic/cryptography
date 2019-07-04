@@ -12,6 +12,7 @@ def sieve_eratosthenes(n):
         Input: Integer (type, int)
         Output: all primes less than input intger (type, list)
 
+        Sloooooooow.
     '''
 
     # Inititally the sieve contains all numbers less than n.
@@ -30,23 +31,6 @@ def sieve_eratosthenes(n):
                 pass
         count += 1
     return primes
-
-
-# Better sieve?
-# numbers = range(2,200+1)
-#
-# i = 2
-#
-# while i < len(numbers):
-#
-#   multiple = 2
-#   while multiple*i <= 200:
-#     if multiple*i in numbers:
-#       numbers.remove(multiple*i)
-#     multiple += 1
-#
-#   i += 1
-
 
 # Number of primes less than an upper-bound.
 def landau_primecount(n):
