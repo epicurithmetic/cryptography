@@ -27,16 +27,16 @@ Taks for the near future include:
 1. Completing the basic AES implementation in Electronic Code Book
 2. Learning other modes of operation for AES i.e. stream ciphers
 3. Working on the cryptopals problems: 
-  - Cryptopals Set 1: Basics
-    - [x] Problem 1 - Convert hex to base64
-    - [x] Problem 2 - Fixed XOR
-    - [x] Problem 3 - Single-byte XOR cipher
-    - [x] Problem 4 - Detect single-character XOR
-    - [x] Problem 5 - Implement repeating-key XOR
-    - [x] Problem 6 - Break repeating-key XOR
-    - [ ] Problem 7 - AES in ECB mode (Implement)
-    - [x] Problem 8 Detect AES in ECB mode
-   - Cryptopals Set 2-8
+    - Cryptopals Set 1: Basics
+      - [x] Problem 1 - Convert hex to base64
+      - [x] Problem 2 - Fixed XOR
+      - [x] Problem 3 - Single-byte XOR cipher
+      - [x] Problem 4 - Detect single-character XOR
+      - [x] Problem 5 - Implement repeating-key XOR
+      - [x] Problem 6 - Break repeating-key XOR
+      - [ ] Problem 7 - AES in ECB mode (Implement)
+      - [x] Problem 8 Detect AES in ECB mode
+     - Cryptopals Set 2-8
 
 #### Number Theory Topics 
 
