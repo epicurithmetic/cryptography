@@ -47,9 +47,9 @@ Number theory plays a large part in modern cryptography. Much of the code writte
   - Euclidean Algorithm
   - Changing between base: binary, decimal, hex, and base64
 - Finite field arithmetic:
-  - Arithmetic over p = 2
+  - Polynomial arithmetic over p = 2
   - Extensions of GF(2): multiplication and inverses
-- Linear algebra:
+- Linear algebra over fintite fields:
   - Matrix arithmetic
 
 
