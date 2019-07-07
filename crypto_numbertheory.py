@@ -166,7 +166,8 @@ def divisors(n):
 
         if (n%i) == 0:
             divisors.append(i)
-            divisors.append(n/i)
+            if not (i == n/i):
+                divisors.append(n/i)
         else:
             pass
 
@@ -1382,4 +1383,4 @@ class Gaussian_Integers:
 # Define a class whose objects are rings of algebraic integers whose type
 # is a class so that one can then refer to the elements of that ring as
 # the objects of the class defining the ring. Elements of the ring will be
-# an object with in a class with in a class. 
+# an object with in a class with in a class.
