@@ -4,10 +4,14 @@ This repository is used as a place for me to store the code I write from my stud
 
 At the moment this repository is *unedited/unoptimized stream-of-consciousness* code. 
 
+---
+
 #### What is in this repository
-============================
+
 
 This repository contains the code I have written to solve the problems on the Cryptopals website. For the most part I have tried to not use any packages/modules/libraries on top of the Python language. I try to implement all of the protocols and the mathematics needed for them myself; the primary goal is learning to code and learning cryptography, speed and efficiency are not the primary goal *at the moment*.
+
+---
 
 #### Cryptography Topics
 
@@ -38,6 +42,8 @@ Taks for the near future include:
       - [ ] Problem 7 - AES in ECB mode (Implement)
       - [x] Problem 8 Detect AES in ECB mode
      - Cryptopals Problem Sets 2-8
+
+--- 
 
 #### Number Theory Topics 
 
