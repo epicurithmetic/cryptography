@@ -19,7 +19,7 @@ Advanced Encryption Standard (AES):
   - Byte-substitution i.e. S-Box layer
   - Diffusion layer (still working on this)
   - Rijndael's key schedule (still working on this)
-  - Inverting all of these layers for decryption
+  - Inverting all of these layers for decryption (have not started on this)
   
 A lot of the code for breaking encryption protocols require plaintext to be detected with out human-reading and input. In order to do this I have written some functions which measure the character frequency of a string and compare it to that of the expected frequency of written english. 
 
@@ -27,7 +27,7 @@ Taks for the near future include:
 1. Completing the basic AES implementation in Electronic Code Book
 2. Learning other modes of operation for AES i.e. stream ciphers
 3. Working on the cryptopals problems: 
-    - Cryptopals Set 1: Basics
+    - Cryptopals Problem Set 1: Basics
       - [x] Problem 1 - Convert hex to base64
       - [x] Problem 2 - Fixed XOR
       - [x] Problem 3 - Single-byte XOR cipher
@@ -36,7 +36,7 @@ Taks for the near future include:
       - [x] Problem 6 - Break repeating-key XOR
       - [ ] Problem 7 - AES in ECB mode (Implement)
       - [x] Problem 8 Detect AES in ECB mode
-     - Cryptopals Set 2-8
+     - Cryptopals Problem Sets 2-8
 
 #### Number Theory Topics 
 
