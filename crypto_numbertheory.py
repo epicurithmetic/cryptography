@@ -12,6 +12,7 @@ def sieve_eratosthenes(n):
         Input: Integer (type, int)
         Output: all primes less than input intger (type, list)
 
+        Sloooooooow.
     '''
 
     # Inititally the sieve contains all numbers less than n.
