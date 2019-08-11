@@ -1,4 +1,5 @@
 # Number theory related functions.
+import timeit
 
 # ---------------------------------------------------------------------------
 #                Primes, Primality Testing, and Factorisation
@@ -74,6 +75,36 @@ def newton_sqrt(x):
         x_initial = x_new
 
     return x_initial
+
+
+# Faster(?) Implementation of SoE.
+# def sieve_eratosthenes_faster(n):
+#
+#   primes = range(2,n+1)
+#
+#   count = 0
+#
+#   while count < newton_sqrt(n):
+#     for x in primes:
+#       if primes[count] == x:
+#         pass
+#       elif (x%primes[count]==0):
+#         primes.remove(x)
+#       else:
+#         pass
+#     count +=1
+#   return primes
+#
+# start = timeit.default_timer()
+# sieve_eratosthenes_faster(1000000)
+# stop = timeit.default_timer()
+# print stop - start
+#
+#
+# start = timeit.default_timer()
+# sieve_eratosthenes(1000000)
+# stop = timeit.default_timer()
+# print stop - start
 
 # Now that we can calculate squareroots, we can write a primality test.
 def isit_prime(n):
@@ -214,8 +245,11 @@ def prime_factorisation(n):
     for i,j in zip(prime_divisor_list,exponents):
         prime_factorisation += ('%s^%s x ' % (str(i),str(j)))
 
-    print '\n'
+    #print '\n'
     return ('%s = ' % str(n)) + prime_factorisation[:-3]
+
+
+
 
 # ---------------------------------------------------------------------------
 #                          Euclidean Algorithm
@@ -342,7 +376,7 @@ def euclid_modular_inverse(a,p):
         print "%s not invertible mod %s" % (a,p)
         return None
 
-
+#print extended_euclid_gcd(17,47)
 # ---------------------------------------------------------------------------
 #                          Base Change Functions
 # ---------------------------------------------------------------------------
