@@ -373,6 +373,50 @@ def text_to_bytes(plaintext):
 
     return plaintext_binary
 
+def binary_to_bytes(binary_string):
+
+    '''
+        Input: binary string (type string)
+        Output: list of 8-bit bytes (type list)
+
+        This function returns the collection of 8-bit bytes of a given
+        binary string.
+
+        The collection of bytes is from the right. Imagine the binary string
+        being feed into a reader-head from the left. This is the convention
+        used throughout these files.
+
+    '''
+
+    binary_list = list(binary_string)
+    length_binary = len(binary_list)
+    binary_list.reverse()
+
+    # The binary string may not have length divisible by 8. So we may have
+    # to pad accordingly.
+    fullbytes = (length_binary / 8)
+    #remainder = length_cipher_bin % 8
+
+    bytes = []
+
+    for i in range(0,fullbytes):
+        byte = binary_list[(8*i) : ((8*i)+8)]
+        bytes.append(byte)
+    bytes.append(binary_list[fullbytes*8 : ])
+    bytes.reverse()
+
+    # Each byte is a list at the moment. We now turn them into strings.
+    bytes_string = []
+    for byte in bytes:
+        byte.reverse()
+        str_byte = ''
+        for i in byte:
+            str_byte = str_byte + i
+        bytes_string.append(str_byte)
+
+    return bytes_string
+
+
 # ------------------
 # Exercise Sheet 3:
 # ------------------
@@ -477,12 +521,113 @@ def linear_diophantine(a,b,c):
 #             pass
 
 # Exercise 5: XOR-binary strings.
-#... coming soon.
+def binary_XOR(binary_string1, binary_string2):
+
+    '''
+        This function XORs two binary strings together i.e. it outputs a binary
+        string which is the bitwise XOR ('exclusive or') of the two input strings
+
+        s | t | s XOR t
+        ----- | --------        This differs from 'or' in the first row
+        1 | 1 |    0            where both being true returns false, rather
+        1 | 0 |    1            than true. Hence EXCLUSIVE-or.
+        0 | 1 |    1
+        0 | 0 |    0
+
+        'Exclusive or' can also be understood as component wise addition
+        modulo 2. While 'or' is addition in the other semifield of size two,
+        the Booleans.
+    '''
+
+    # Turn the strings into a list.
+    bin1 = list(binary_string1)
+    bin2 = list(binary_string2)
+
+    # If they are of different length, then we pad the shorter string on the
+    # left with 0s. We pad on the left as this does not change the number.
+    # padding on the right changes the number!
+    l1 = len(bin1)
+    l2 = len(bin2)
+
+    if l1 < l2:
+
+        # Pad start of short binary with zeroes
+        diff = l2 - l1
+        zeroes = '0'*diff
+        zeroes = list(zeroes)
+        bin1 = zeroes + bin1
+
+    elif l2 < l1:
+
+        # Pad start of short binary with zeroes
+        diff = l1 - l2
+        zeroes = '0'*diff
+        zeroes = list(zeroes)
+        bin2 = zeroes + bin2
+
+    else:
+        pass
+
+    XOR_binary = [((int(a) + int(b)) % 2) for a, b in zip(bin1, bin2)]
+
+    XOR_binary_string = ''
+    for x in XOR_binary:
+        XOR_binary_string += str(x)
+
+    return XOR_binary_string
 
 
 # Exercise 6: XOR Single-Byte Encryption.
-#... coming soon.
+def XOR_cipher(plaintext, key):
 
+    '''
+        Input: plaintext (type str) and key (type str).
+
+        Output: Plaintext XOR'd against the (repeated) key printed in
+                hex encoding to "look pretty".
+
+        Note: This does not need a "mode" argument as it is perfectly
+              symmetric. Encryption is exactly the same algorithm as
+              decryption.
+
+    '''
+
+    plaintext = list(plaintext)
+    key = list(key)
+
+    l_key = len(key)
+    l_plaintext = len(plaintext)
+
+    # Use ASCII encoding to get intger values for each character in plaintext.
+    plaintext = [ord(x) for x in plaintext]
+
+    # Since the key length may not divide the length of the plaintext, we have
+    # to make sure we repeat the key the correct number of times.
+    repeat = l_plaintext / l_key
+    buff = l_plaintext % l_key
+    repeated_key = key*repeat + key[0:buff]
+
+    # With the key the appropiate length, we can now XOR the plaintext with key.
+    ciphertext_ASCII = [x^ord(y) for x,y in zip(plaintext,repeated_key)]
+    ciphertext_binary = [decimal_to_binary(x) for x in ciphertext_ASCII]
+
+    # Something needs to be done...
+    for i in range(1, len(ciphertext_binary)):
+        l_buff = 8 - len(ciphertext_binary[i])
+        buff = '0'*l_buff
+        ciphertext_binary[i] = buff + ciphertext_binary[i]
+
+    # Now the ciphertext is in bytes. So we make one binary number for the
+    # entire ciphertext.
+    ciphertext_binary_string = ''
+    for i in ciphertext_binary:
+        ciphertext_binary_string += i
+
+    # Now we want convert the ciphertext into HEX for printing.
+    ciphertext_decimal_string = binary_to_decimal(ciphertext_binary_string)
+    ciphertext = decimal_to_hex(ciphertext_decimal_string)
+
+    return ciphertext
 
 # ------------------
 # Exercise Sheet 4:
@@ -584,10 +729,136 @@ def pollard_prime_hunter(n):
             quit()
 
 # Exercise 4: Frequency Analysis
-#... coming soon.
+def character_frequency_score(text):
+
+    """
+        Input: Text to be scored. Type, string.
+
+        Output: Score of the text. Type, float.
+
+        This function can be used to compare the "english-ness" of strings
+        with equal length. The highest possible score, for a fixed length
+        string, is a string of all ' ' spaces. Obviously, this is not English.
+
+        In theory this function will be used to pick an english string out of random
+        noise; that is, out of a collection of strings of apparently random character
+        distribution. Thus strings of constant characters should not arise; as they
+        are extremely unlikely to result from encryption of an english sentence.
+
+        Among these strings, English should score highest; as a string written
+        in English will have more letters of higher weight and thus have
+        a higher score.
+
+        It employs the following dictionary to obtain the scores for each pair:
+
+        letter_frequencies = {'e': 0.1202, 't': 0.0910, 'a': 0.0812, 'o': 0.0768,
+                              'i': 0.0731, 'n': 0.0695, 's': 0.0628, 'r': 0.0602,
+                              'h': 0.0592, 'd': 0.0432, ' ': 0.2918,
+                              'l': 0.0398, 'u': 0.0288, 'c': 0.0271, 'm': 0.0261,
+                              'f': 0.0230, 'y': 0.0211, 'w': 0.0209, 'g': 0.0203,
+                              'p': 0.0182, 'b': 0.0149, 'v': 0.0111, 'k': 0.0069,
+                              'x': 0.0017, 'q': 0.0011, 'j': 0.0010, 'z': 0.0007,
+                              'E': 0.1202, 'T': 0.0910, 'A': 0.0812, 'O': 0.0768,
+                              'I': 0.0731, 'N': 0.0695, 'S': 0.0628, 'R': 0.0602,
+                              'H': 0.0592, 'D': 0.0432,
+                              'L': 0.0398, 'U': 0.0288, 'C': 0.0271, 'M': 0.0261,
+                              'F': 0.0230, 'Y': 0.0211, 'W': 0.0209, 'G': 0.0203,
+                              'P': 0.0182, 'B': 0.0149, 'V': 0.0111, 'K': 0.0069,
+                              'X': 0.0017, 'Q': 0.0011, 'J': 0.0010, 'Z': 0.0007
+                              }
+
+
+    """
+
+    letter_frequencies = {'e': 0.1202, 't': 0.0910, 'a': 0.0812, 'o': 0.0768,
+                          'i': 0.0731, 'n': 0.0695, 's': 0.0628, 'r': 0.0602,
+                          'h': 0.0592, 'd': 0.0432, ' ': 0.1918,
+                          'l': 0.0398, 'u': 0.0288, 'c': 0.0271, 'm': 0.0261,
+                          'f': 0.0230, 'y': 0.0211, 'w': 0.0209, 'g': 0.0203,
+                          'p': 0.0182, 'b': 0.0149, 'v': 0.0111, 'k': 0.0069,
+                          'x': 0.0017, 'q': 0.0011, 'j': 0.0010, 'z': 0.0007,
+                          'E': 0.1202, 'T': 0.0910, 'A': 0.0812, 'O': 0.0768,
+                          'I': 0.0731, 'N': 0.0695, 'S': 0.0628, 'R': 0.0602,
+                          'H': 0.0592, 'D': 0.0432,
+                          'L': 0.0398, 'U': 0.0288, 'C': 0.0271, 'M': 0.0261,
+                          'F': 0.0230, 'Y': 0.0211, 'W': 0.0209, 'G': 0.0203,
+                          'P': 0.0182, 'B': 0.0149, 'V': 0.0111, 'K': 0.0069,
+                          'X': 0.0017, 'Q': 0.0011, 'J': 0.0010, 'Z': 0.0007
+                          }
+
+
+    l = len(text)
+    score = 0
+    for i in range(0,l):
+
+        if text[i] in letter_frequencies:
+            score = score + letter_frequencies[text[i]]
+        else:
+            pass
+
+    return score
 
 # Exercise 5: Break Single-Byte XOR
-#... coming soon.
+def XOR_cipher_break(ciphertext):
+
+    """
+        Input: Ciphertext presented in HEX (type string)
+
+        Output: key and plaintext (type string)
+
+        This function brute forces all 256 single-byte keys. Scoring each
+        decryption according to the "English-ness" of the text. This function
+        returns the text and key with the highest score.
+
+    """
+
+    # First we need to turn the ciphertext from HEX into a list of bytes.
+    ciphertext_binary = decimal_to_binary(hex_to_decimal(ciphertext))
+    ciphertext_bytes = binary_to_bytes(ciphertext_binary)
+
+    # Initialize some parameters to keep track of highest score decryption.
+    max_score = 0
+    max_score_key = 257
+    max_score_plaintext = ''
+
+    # Brute force each possible key.
+    for key in range(0,256):
+
+        key_byte = decimal_to_binary(key)
+
+        plaintext = []
+
+        for x in ciphertext_bytes:
+
+            XOR_decrypt_byte = binary_XOR(x,key_byte)
+            XOR_decrypt_deci = binary_to_decimal(XOR_decrypt_byte)
+            XOR_decrypt = chr(XOR_decrypt_deci)
+
+            plaintext.append(XOR_decrypt)
+
+        plaintext_string = ''
+        for x in plaintext:
+            plaintext_string += x
+
+        # Score this guess
+        key_score = character_frequency_score(plaintext_string)
+
+        # Check this score against previous max. Update accordingly.
+        if key_score > max_score:
+            max_score = key_score
+            max_score_key = key
+            max_score_plaintext = plaintext_string
+        else:
+            pass
+
+    return max_score_plaintext
+
+
+x = '0a3c26733b3632373a3d74733c262773273c7320362773373c243d73203c3e36733c3573273b3a20733d32272621323f7320233f363d373c216c'
+
+print XOR_cipher_break(x)
+
+
 
 
 # ------------------
