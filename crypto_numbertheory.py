@@ -198,7 +198,8 @@ def divisors(n):
 
         if (n%i) == 0:
             divisors.append(i)
-            divisors.append(n/i)
+            if not (i == n/i):
+                divisors.append(n/i)
         else:
             pass
 
@@ -326,7 +327,7 @@ def extended_euclid_gcd(a,b):
     print "Bezout coefficients: ", (old_s, old_t)
     print "[%s]*%s + [%s]*%s = gcd(%s,%s) = %s" % (old_s,a,old_t,b,a,b,old_r)
     print "Greatest common divisor: ", old_r
-    return "What more could you want?"
+    return old_s, old_t
 
 # ... with the extended Euclidean algorithm implemented we can now calculate
 # inverses in modular arithmetic.
@@ -336,7 +337,7 @@ def euclid_modular_inverse(a,p):
         Input: Integers a,p (Type, int)
         Output: Inverse of a mod p. (Type, int).
 
-        Note: This code assumes a < p and that the inverse exists. Not the
+        Note: This code assumes a < p and that the inverse exists. Note the
         function will return "None" if a is not invertible mod p.
 
         Note: This function employs the extended Euclidean algorithm to find
@@ -413,6 +414,7 @@ def decimal_to_binary(integer):
     binaryrep = ''
 
     max = max_power_two(integer)
+    print max
 
     for i in range(max,-1,-1):
 
