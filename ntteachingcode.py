@@ -859,7 +859,7 @@ def miller_rabin(n):
 # # Primes for testing:
 # base = [5,7,11]
 #
-# # For define the coefficients
+# # Define the coefficients
 # for a in range(0,5):
 #     for b in range(0,5):
 #
@@ -900,13 +900,186 @@ def miller_rabin(n):
 # ------------------
 
 # Exercise 1: Caesar Cipher
-#... coming soon
+
+# We can assign the letters to the alphabet according to the index of the
+# letter in the following list:
+# alphabet = ['a','b','c','d','e','f','g','h','i','j','k','l','m','n','o','p','q','r','s','t','u','v','w','x','y','z']
+def caesar_cipher(plaintext,key,mode):
+
+    '''
+        Inputs:   (i) Plaintext: type string
+                 (ii) Key for encryption: type string - one integer in the
+                      range [0,25]
+                (iii) Mode: either 'e' (encryption) or 'd' (decryption)
+
+        Output: Depends on the value of mode. Either encrypted or decrypted
+                text. Encryption scheme: Caesar (i.e. shift) cipher. Shifted
+                by the input key.
+
+
+    '''
+    # Need the alphabet to make the change between letters and numbers.
+    alphabet = ['a','b','c','d','e','f','g','h','i','j','k','l','m','n','o','p','q','r','s','t','u','v','w','x','y','z']
+
+    # Take the plaintext string and turn it into a list:
+    plaintext_list = list(plaintext)
+    L = len(plaintext_list)
+
+    # Substitute letters for numbers
+    for i in range(0,L):
+        number_substitution = alphabet.index(plaintext_list[i])
+        plaintext_list[i] = number_substitution
+
+    # Depending upon mode: encryption or decryption
+    if mode == 'e':
+        for i in range(0,L):
+            plaintext_list[i] = (plaintext_list[i] + key) % 26
+
+    elif mode == 'd':
+        for i in range(0,L):
+            plaintext_list[i] = (plaintext_list[i] - key) % 26
+
+    else:
+        return 'Incorrect mode specified. Do you want to encrypt or decrypt? ("e"/"d")'
+
+    print plaintext_list
+    # Substitute back into letters from the ciphertext numbers.
+    ciphertext = ''
+    for x in plaintext_list:
+        ciphertext += alphabet[x]
+
+    return ciphertext
 
 # Exercise 2: Affine Cipher
-#... coming soon
+def affine_cipher(plaintext,key,mode):
+
+    '''
+        Inputs:   (i) Plaintext: type string
+                 (ii) Key for encryption: type list - pair of integers
+                      [a,b]: where gcd(a,26)=1 and b in [0,25]
+                (iii) Mode: either 'e' (encryption) or 'd' (decryption)
+
+        Output: Depends on the value of mode. Either encrypted or decrypted
+                text. Encryption scheme: Caesar (i.e. shift) cipher. Shifted
+                by the input key.
+
+    '''
+    # Need the alphabet to make the change between letters and numbers.
+    alphabet = ['a','b','c','d','e','f','g','h','i','j','k','l','m','n','o','p','q','r','s','t','u','v','w','x','y','z']
+
+    # Set the required parameters:
+    a = key[0]
+    b = key[1]
+    a_inverse = 1
+
+    # decryption shift
+    c = a_inverse*b
+
+    # Check if key is valid:
+    if euclid_gcd(a,26) == 1:
+        a_inverse = euclid_modular_inverse(a,26)
+    else:
+        return 'Key is not valid. The first element of the key must be coprime to 26.'
+
+    # Take the plaintext string and turn it into a list:
+    plaintext_list = list(plaintext)
+    L = len(plaintext_list)
+
+    # Substitute letters for numbers
+    for i in range(0,L):
+        number_substitution = alphabet.index(plaintext_list[i])
+        plaintext_list[i] = number_substitution
+
+    # Depending upon mode: encryption or decryption
+    if mode == 'e':
+        for i in range(0,L):
+            plaintext_list[i] = ((a*plaintext_list[i] + b) % 26)
+
+    elif mode == 'd':
+        for i in range(0,L):
+            plaintext_list[i] = ((a_inverse*plaintext_list[i] - c) % 26)
+
+    else:
+        return 'Incorrect mode specified. Do you want to encrypt or decrypt? ("e"/"d")'
+
+    print plaintext_list
+
+    # Substitute back into letters from the ciphertext numbers.
+    ciphertext = ''
+    for x in plaintext_list:
+        ciphertext += alphabet[x]
+
+    return ciphertext
 
 # Exercise 3: Vigenere Cipher
-#... coming soon
+def vigenere_cipher(plaintext,key,mode):
+
+    '''
+        Input:      (i) Plaintext: type string
+                   (ii) Key: type string
+                  (iii) Mode: type string. If encrypting, then 'e'.
+                              If decrypting, then 'd'.
+
+        Output: type string. Plaintext or ciphertext depending upon the mode.
+
+        Encryption method: Vigenere cipher. If they key is shorter than the
+                           message, then it is repeated as many times as
+                           necessary in order to be equal to the length of the
+                           plaintext(message).
+
+    '''
+    # Need the alphabet to make the change between letters and numbers.
+    alphabet = ['a','b','c','d','e','f','g','h','i','j','k','l','m','n','o','p','q','r','s','t','u','v','w','x','y','z']
+
+    # We need to repeat the key as many times as required to cover the
+    # entire plaintext.
+    plaintext = list(plaintext)
+    key = list(key)
+
+    L_message = len(plaintext)
+    L_key = len(key)
+
+    q = L_message/L_key
+    r = L_message % L_key
+    # repeat the key...
+    repeated_key = q*key + key[0:r]
+
+    # Encrypt or decrypt depending upon the mode
+    ciphertext = []
+
+    # If encrypting...
+    if mode == 'e':
+
+        for i in range(0,L_message):
+
+            plaintext_index = alphabet.index(plaintext[i])
+            key_index = alphabet.index(repeated_key[i])
+            cipher_index = (plaintext_index + key_index) % 26
+
+            ciphertext.append(alphabet[cipher_index])
+
+    # elif decrypting...
+    elif mode == 'd':
+
+        for i in range(0,L_message):
+
+            plaintext_index = alphabet.index(plaintext[i])
+            key_index = alphabet.index(repeated_key[i])
+            cipher_index = (plaintext_index - key_index) % 26
+
+            ciphertext.append(alphabet[cipher_index])
+
+    # else error...
+    else:
+        return 'You did not specifiy a correct mode of operation ("e"/"d")'
+
+    # Substitute back into letters from the ciphertext numbers.
+    ciphertext_string = ''
+    for x in ciphertext:
+        ciphertext_string += x
+
+    return ciphertext_string
+
 
 # Exercise 4: Break Them All
 #... coming soon
@@ -919,9 +1092,15 @@ def miller_rabin(n):
 #... coming soon
 
 # Exercise 2: Pseudo-Randon Number Generator.
-
 # This code will implement the Linear Congruential PRNG.
 def lcprng():
+
+    '''
+        This function uses a seed obtained from the time to generate
+        a sequence of 10 random numbers. The process of generating the
+        numbers is known as Linear Congruential Generation.
+
+    '''
 
 
     # We need to determine a seed value to start the process. I will use the
@@ -950,7 +1129,7 @@ def lcprng():
 
     return random_numbers
 
-# In order to get a prime number largue enough for RSA to be secure, we need to
+# In order to get a prime number large enough for RSA to be secure, we need to
 # generate primes of at least 1000bits or 150 (decimal) digits.
 def rng():
 
@@ -966,8 +1145,9 @@ def rng():
     large_integer = int(large_number[0:100])
     return large_integer
 
+#Exercise 3: Finding Large Prime Numbers.
 # Now we have a way of producing large integers. But we want large primes
-# not just large integers. 
+# not just large integers.
 def random_prime_generator():
 
     '''
@@ -980,6 +1160,13 @@ def random_prime_generator():
         guaranteed with a particular probablity. We run Miller-Rabin for 12
         different bases so the probablity of a false prime is (1/4) ^ 12. This
         is approximately (but not exactly) zero.
+
+        The Prime Number Theorem gives us an estimate on the distribution of
+        primes. When we are out this far a long the number line, the PNT
+        suggests we will come across a prime number (on average) once every
+        twenty odd-numbers i.e. 5% of the time. So we can pick a random number
+        and increment until we get a prime; assured by the PNT that we will
+        not have to do too many increments until we find a prime number.
 
     '''
     # Seed our prime search with a random number.
@@ -1003,5 +1190,3 @@ def random_prime_generator():
             prime = True
     print count
     return seed
-
-print random_prime_generator()
