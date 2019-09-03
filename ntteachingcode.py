@@ -1437,8 +1437,8 @@ def affine_cipher_break(ciphertext):
 def lcprng():
 
     '''
-        This function uses a seed obtained from the time to generate
-        a sequence of 10 random numbers. The process of generating the
+        This function uses a seed obtained from the time at time to of exectution
+        to generate a sequence of 10 random numbers. The process of generating the
         numbers is known as Linear Congruential Generation.
 
     '''
@@ -1455,8 +1455,8 @@ def lcprng():
 
     # Use the LCPRNG algorithm with the following paramters:
     a = 6364136223846793005
-    c = 1442695040888963407
-    m = (2**63)
+    c = 1442695040888963407         # These parameters were used by Knuth.
+    m = (2**63)                     # No sense arguing with him! 
 
     # Set a counter for the loop.
     k = 1
