@@ -11,6 +11,8 @@ At the moment this repository is *unedited/unoptimized stream-of-consciousness* 
 
 This repository contains the code I have written to solve the problems on the Cryptopals website. For the most part I have tried to not use any packages/modules/libraries on top of the Python language. I try to implement all of the protocols and the mathematics needed for them myself; the primary goal is learning to code and learning cryptography, speed and efficiency are not the primary goal *at the moment*.
 
+This repository now contains the code I used when teaching a first course on Number Theory and Cryptography at the ANU in 2019. This can be found in the file "ntteachingcode.py". This file contains code relating to things like: solving Diophantine equations; finding greatest common divisors; encryption with some basic ciphers; primality tests; and many more number theory related topics.  
+
 ---
 
 #### Cryptography Topics
