@@ -1358,6 +1358,10 @@ def vigenere_cipher(plaintext,key,mode):
 #       functions do not work well if the plaintext is short. Roughly speaking
 #       these functions will work if the plaintext is greater than 50 characters.
 #       Otherwise, they may not return the correct plaintext.
+#       One remedy for this is to write a function that looks for common
+#       words in the strings; rather than focusing on the letter frequency.
+#       This should return English in short strings; but you have to
+#       import an (English) dictionary. 
 
 # This function will break the Caesar cipher.
 def caesar_cipher_break(ciphertext):
@@ -1456,7 +1460,7 @@ def lcprng():
     # Use the LCPRNG algorithm with the following paramters:
     a = 6364136223846793005
     c = 1442695040888963407         # These parameters were used by Knuth.
-    m = (2**63)                     # No sense arguing with him! 
+    m = (2**63)                     # No sense arguing with him!
 
     # Set a counter for the loop.
     k = 1
