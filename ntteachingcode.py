@@ -810,6 +810,10 @@ def XOR_cipher_break(ciphertext):
         decryption according to the "English-ness" of the text. This function
         returns the text and key with the highest score.
 
+        Note: this function assumes the ciphertext is given in hexadecimal
+              representation. If this is not true, then some massaging of the
+              data will have to be done before this function can be applied.
+
     """
 
     # First we need to turn the ciphertext from HEX into a list of bytes.
@@ -851,15 +855,12 @@ def XOR_cipher_break(ciphertext):
         else:
             pass
 
-    return max_score_plaintext
+    return max_score_plaintext, 'Key: This text was encrypted with key %s' % chr(max_score_key)
 
 
-x = '0a3c26733b3632373a3d74733c262773273c7320362773373c243d73203c3e36733c3573273b3a20733d32272621323f7320233f363d373c216c'
-
-print XOR_cipher_break(x)
-
-
-
+# x = '0a3c26733b3632373a3d74733c262773273c7320362773373c243d73203c3e36733c3573273b3a20733d32272621323f7320233f363d373c216c'
+#
+# print XOR_cipher_break(x)
 
 # ------------------
 # Exercise Sheet 5:
@@ -1213,7 +1214,6 @@ def caesar_cipher(plaintext,key,mode):
     else:
         return 'Incorrect mode specified. Do you want to encrypt or decrypt? ("e"/"d")'
 
-    print plaintext_list
     # Substitute back into letters from the ciphertext numbers.
     ciphertext = ''
     for x in plaintext_list:
@@ -1273,7 +1273,7 @@ def affine_cipher(plaintext,key,mode):
     else:
         return 'Incorrect mode specified. Do you want to encrypt or decrypt? ("e"/"d")'
 
-    print plaintext_list
+
 
     # Substitute back into letters from the ciphertext numbers.
     ciphertext = ''
@@ -1353,7 +1353,77 @@ def vigenere_cipher(plaintext,key,mode):
 
 
 # Exercise 4: Break Them All
-#... coming soon
+
+# Note: due to the statistical nature of the "English-ness" test these
+#       functions do not work well if the plaintext is short. Roughly speaking
+#       these functions will work if the plaintext is greater than 50 characters.
+#       Otherwise, they may not return the correct plaintext.
+
+# This function will break the Caesar cipher.
+def caesar_cipher_break(ciphertext):
+
+    '''
+        Input: ciphertext written in the English alphabet. Type, string.
+
+        Output: plaintext. Type, string.
+
+        Note: due to the statistical nature of the "English-ness" test, the plaintext
+              needs to be sufficiently large in order for this to work.
+
+    '''
+
+
+    # Initialize some parameters to keep track of highest score decryption.
+    max_score = 0
+    max_score_key = 0
+    max_score_plaintext = ''
+
+    # Brute force all the keys.
+    for key in range(0,26):
+
+        # Decrypt with this key...
+        plaintext = caesar_cipher(ciphertext,key,'d')
+        # ... score the decryption.
+        score = character_frequency_score(plaintext)
+        if score > max_score:
+            max_score = score
+            max_score_key = key
+            max_score_plaintext = plaintext
+        else:
+            pass
+
+    return max_score_plaintext, max_score_key
+
+# Break the affine cipher
+def affine_cipher_break(ciphertext):
+
+
+    # Initialize some parameters to keep track of highest score decryption.
+    max_score = 0
+    max_score_key = 0
+    max_score_plaintext = ''
+
+    # Brute force all keys:
+    for i in [1,3,5,7,9,11,15,17,19,21,23,25]:
+        for j in range(0,26):
+
+            # Define the key.
+            key = [i,j]
+
+            # decrypt with this key
+            plaintext = affine_cipher(ciphertext,key,'d')
+
+            # score the decryption
+            score = character_frequency_score(plaintext)
+
+            if score > max_score:
+                max_score = score
+                max_score_key = key
+                max_score_plaintext = plaintext
+            else:
+                pass
+
+    return max_score_plaintext, 'Key: a = %d and c = %d' % (max_score_key[0],max_score_key[1])
 
 # ------------------
 # Exercise Sheet 7:
