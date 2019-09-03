@@ -416,7 +416,6 @@ def binary_to_bytes(binary_string):
 
     return bytes_string
 
-
 # ------------------
 # Exercise Sheet 3:
 # ------------------
@@ -874,36 +873,39 @@ def XOR_cipher_break(ciphertext):
 #       speeds that it achieves.
 
 # Exercise 0: Exponentiation Modulo m.
-def exp_mod(a,e,m):
+def binary_exponentiation(a,e,m):
 
     '''
-        This calculates the a to the power of e mod m. It leverages the
-        fact that reducing mod m commutes with multiplication to keep the
-        integers small enough to not get a memory error.
-
-        Note: if m is too large, then we can't get around that using this
-        function. Other methods will have to be employed in order to
-        get around the fact that computers only have limited memory.
-
-        All of this seems overkill as Python has the ability to handle
-        large integers built into its structure. <type, long-int>
-
-        Note: This is far too slow when used in the Miller test. In order
-              to get better speed you can use the in-built Python function
-              pow(base,exponent,moduli) to do the same job... much faster.
+        Calculate a**e mod m using binary exponentiation. Same input/output
+        as pow() from the Python standard library. Speed of Python standard
+        library function is siginficantly better than my own implementation.
 
     '''
 
-    exp_a = a
-    exp = 2
+    exponent_binary = list(decimal_to_binary(e))
+    exponent_binary.reverse()
+    L = len(exponent_binary)
 
-    while exp <= e:
+    # Initialize the product
+    product = 1
 
-        exp_a = (exp_a*a) % m
-        exp += 1
-        #print exp
+    # Set a counter for the while-loop
+    i = 0
+    while i < L:
 
-    return exp_a
+        # Update product according to the current bit of the exponent.
+        if exponent_binary[i] == '1':
+            product = (product * a) % m
+        else:
+            pass
+
+        # Now square a
+        a = ((a**2) % m)
+
+        # Move to the next bit
+        i += 1
+
+    return product
 
 # Exercise 1: Fermat Primality/Composite Test.
 def fermat_composite_test(n,a):
@@ -972,8 +974,12 @@ def miller_composite_test(n,a):
         #print "Now calculating the square root."
 
         # Calculate the test integer.
-        test_integer = pow(a,e,n)
-        #print test_integer, j
+        test_integer = pow(a,e,n)       # Note: Python standard library pow()
+                                        # is optimized much more than my custom
+                                        # implementation of binary exponentiation.
+                                        # Speed difference is significant for
+                                        # large i.e. > 2^64 integers.
+
 
         # Now we to decide whether or not to continue running the test:
         if test_integer == 1:
@@ -1105,7 +1111,7 @@ def miller_rabin(n):
 #
 # # Miller-Rabin
 # start = timeit.default_timer()
-# print miller_rabin(a)
+# print miller_rabin(x)
 # finish = timeit.default_timer()
 # time = finish - start
 # print time
@@ -1361,7 +1367,7 @@ def vigenere_cipher(plaintext,key,mode):
 #       One remedy for this is to write a function that looks for common
 #       words in the strings; rather than focusing on the letter frequency.
 #       This should return English in short strings; but you have to
-#       import an (English) dictionary. 
+#       import an (English) dictionary.
 
 # This function will break the Caesar cipher.
 def caesar_cipher_break(ciphertext):
@@ -1434,7 +1440,7 @@ def affine_cipher_break(ciphertext):
 # ------------------
 
 # Exercise 1: Fast Exponentiation
-#... coming soon
+# Code written as Exercise 0 of Sheet 5.
 
 # Exercise 2: Pseudo-Randon Number Generator.
 # This code will implement the Linear Congruential PRNG.
