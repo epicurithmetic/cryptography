@@ -76,7 +76,6 @@ def newton_sqrt(x):
 
     return x_initial
 
-
 # Faster(?) Implementation of SoE.
 # def sieve_eratosthenes_faster(n):
 #

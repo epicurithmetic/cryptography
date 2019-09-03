@@ -1,8 +1,11 @@
 # Pollard Prime Factor Hunter
-import crypto_numbertheory as nt
+import ntteachingcode as nt
 import math
 
-n = 527
+# # Import a random 100 digit integer using the LCprng in my teaching code.
+# n = nt.rng()
+n = 123256927345872
+
 k = 1
 
 print "Pollard's (p-1) algorithm will be employed to find a prime divisor of %d" % n
@@ -30,9 +33,10 @@ while prime_found == False:
         k += 1
 
     # Break before number of iterations gets too high
-    if k > 10:
-        print nt.prime_factorisation(n)
-        print nt.prime_factorisation(n-1)
+    if k > 12:
+        #print nt.prime_factorisation(n)
+        #print nt.prime_factorisation(n-1)
+        print 'No prime divisor found after 12 iterations.'
         quit()
 
 
