@@ -692,39 +692,91 @@ def pollard_prime_hunter(n):
         of an integer. See the notes for Week 4 for an explanation of
         Pollard's algorithm.
 
+        Note: this algorithm has infinite loops! If we don't change the base
+              over which we are calculating, then the algorithm will not stop
+              when the input is (for example) 65 or 85.
+
+              In order to fix this, I have written the code to change base
+              if this loop is detected. I am not sure of the extent to which
+              this algorithm will find a divisor in finite time. Does every base
+              have numbers for which this infinite loop will happen? Will it
+              happen on multiple bases?
+
+              I imagine something along the following lines is known:
+
+                Given an input n. There exists a finite set of primes and
+                and integer k_max such that a prime-divisor of n will be found
+                with this test using all choices of paramters from the list
+                of primes (for the base) and k<k_max for the exponent.
+
     '''
 
     # Rather than calculating the factorial every iteration, we can simply
     # update the value L by raising it to the kth power. Reducing mod n
     # at each stage as this keeps the numbers below n.
-    L = 2
+
+    # We need some initial parameters to start the test:
+
+    # Primes to choose the base from.
+    primes = sieve_eratosthenes(300)
+
+    # Some counter to say we have run out of primes.
+    i = 0
+    i_break = len(primes)-1
+
+    # Pick the first base.
+    base = primes[i]
+    L = base
+
+    # An exponent to start on.
     k = 1
+
+    # Set a Boolean to decide when to stop the algorithm.
     prime_found = False
 
-    # While no prime divisor has been found, we loop.
+    # While no prime divisor has been found we loop.
     while prime_found == False:
 
+        # Do the precalculation for the GCD
         L = (L ** k) % n
-
         M_k = (L - 1) % n
 
         # Calculate the GCD
         G_C_D = euclid_gcd(M_k,n)
 
         # Print the data of each stage. As presented in the notes.
-        print 'k = %d, 2^(%d!) - 1 = %d mod %d, gcd(%d,%d) = %d' % (k, k, M_k,n,M_k,n,G_C_D)
+        #print 'k = %d, %d^(%d!) - 1 = %d mod %d, gcd(%d,%d) = %d' % (k, base, k, M_k,n,M_k,n,G_C_D)
 
         # Check if a prime divisor has been found.
         if isit_prime(G_C_D) == True:
-            prime_divisor = G_C_D
             prime_found = True
             return G_C_D
+
+        # If G_C_D is composite, then we can simply run the test again with
+        # n = G_C_D; as a prime divisor of G_C_D will be a prime divisor of n.
+
+        elif ((G_C_D > 1) and (i < i_break)):
+
+            # Which numbers go into this part of the code?
+            print n,k,base
+
+            # In order to run the test with n = G_C_D, we just reset the
+            # initial parameters. However, this time we change the base of
+            # the exponentiation.
+            n = G_C_D
+
+            # Go to the next base:
+            i = i + 1
+            base = primes[i]
+            L = base
+            k = 1
+
         else:
             k += 1
 
         # Break if loop goes on for too long...
         if k > 100:
-            return 'No prime divisor found after 100 iterations.'
+            return 'No prime divisor. Note: this does not mean the integer is prime.'
             quit()
 
 # Exercise 4: Frequency Analysis
@@ -877,8 +929,10 @@ def binary_exponentiation(a,e,m):
 
     '''
         Calculate a**e mod m using binary exponentiation. Same input/output
-        as pow() from the Python standard library. Speed of Python standard
-        library function is siginficantly better than my own implementation.
+        as pow() from the Python standard library.
+
+        Speed of Python standard library function is siginficantly better than
+        my own implementation.
 
     '''
 
