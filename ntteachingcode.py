@@ -1595,3 +1595,357 @@ def random_prime_generator():
             prime = True
     print count
     return seed
+
+
+
+# --------------------------------------
+# Exercise Sheet Aleph: Elliptic Curves
+# --------------------------------------
+
+class EllipticCurve:
+
+    """
+        An instance is determined by three integers: a,b,p.
+
+            p must be a prime greater than 2
+            a,b can be any integers which satisfy the following congruence
+
+                4a^3 + 27b^2 =/= 0 mod p.
+
+        Instances of this class are Elliptic curves of the form:
+
+                y^2 = x^3 + ax + b
+
+        over a fixed prime p.
+
+
+    """
+
+    # Define the data which is required to create an instance of this class.
+    def __init__(self,a,b,p):
+
+        if (((4*(a**3) + 27*(b**2)) % p) == 0):
+            print 'This curve is singular and hence not an elliptic curve.'
+            self.singular = True
+        else:
+            self.a = a
+            self.b = b
+            self.p = p
+            self.field = ('This elliptic curve is defined over GF(%d)' % p)
+            self.singular = False
+
+
+    def Points(self):
+
+        """
+            This method returns the list of points on the elliptic curve.
+
+        """
+
+        # Initialize the output.
+        points = [float('inf')]
+
+        # Set range of values to check.         # We can use the symmetry of
+        y_range = ((self.p - 1)/2) + 1          # of the curve to cut-down on
+                                                # the search.
+
+        # Brute force search for points on the elliptic curve.
+        for x in range(0,self.p):
+            for y in range(0,y_range):
+
+                if ((y**2)%self.p) == (((x**3)+ self.a*x + self.b) % self.p):
+
+                     point = [x,y]
+                     points.append(point)
+                     if y == 0:
+                         pass
+                     else:
+                        point_symmetry = [x,self.p-y]
+                        points.append(point_symmetry)
+
+        return points
+
+    def GroupOrder(self):
+
+        """
+            This method returns the order of the group of points on
+            the elliptic curve; it simply calculates all the points
+            using the points method and measures the length of that
+            list.
+
+            Note: this count includes the point at infinity.
+
+        """
+
+        return len(self.Points())
+
+
+    def Generator(self):
+
+        """
+            This method tries to find a generator for the group of points
+            on the elliptic curve.
+
+        """
+
+        # Get the list of points without the point at infinity.
+        points = (self.Points())[1:]
+        L = len(points)
+
+        # Set a counter to go through the points.
+        i = 0
+
+        # Set a boolean to stop the search.
+        found_generator = False
+
+        # Search for a generator.
+        while (found_generator == False) and (i < L):
+
+            p = points[i]
+            P = EllipticCurvePoint(self,p[0],p[1])
+
+            order = P.PointOrder()
+
+            # If the order of the element matches the order of the group
+            # then we have succeded in finding a generator.
+            if order == (L+1):
+                generator = P
+                found_generator = True
+            else:
+                i = i + 1
+
+        # Decide what to return.
+        if found_generator == True:
+            return generator
+        else:
+            return None
+
+    def IsomorphismClass(self):
+
+        """
+            This function returns the isomorphism class of the group
+            of points on the elliptic curve.
+
+            It seems that the possible group structure is constrained a lot.
+            There is a theorem saying there are only two distinct cyclic
+            subgroups in the decomposition. Learn this and code it.
+
+        """
+
+        # The isomorphism class depends on the order:
+        order = self.GroupOrder()
+
+        # If the order is prime, it must be cyclic.
+        if miller_rabin(order) == True:
+            g = self.Generator()
+            return 'The group of points is a cyclic group isomorphic to Z/%dZ. \n The point (%d,%d) generates the group.' % (order,g.x,g.y)
+        else:
+            pass
+
+        # If we can find a generator, then we know the structure.
+        g = self.generator()
+        if g == None:
+            pass
+        else:
+            return 'The group of points is a cyclic group isomorphic to Z/%dZ. \n The point (%d,%d) generates the group.' % (order,g.x,g.y)
+
+
+        # When all else fails we can use the fundamental theorem of finite
+        # Abelian groups in order to determine the structure of the group.
+
+        # # First we need to find the prime factorisation of the order.
+        # prime_divisor_list = prime_divisors(order)
+        # exponents = []
+        # for i in prime_divisor_list:
+        #     exponents.append(exponent_of_divisor(order,i))
+        #
+        # prime_factorisation = zip(prime_divisor_list,exponents)
+
+
+    def CyclicSubGroups(self):
+
+        """
+            Determine which subgroups arise in the group of points
+            on the elliptic curve by considering the elements
+            of the individual points.
+
+        """
+
+        points = self.Points()[1:]
+
+        # This list contains the orders of elements in the group
+        cyclic_subgroups = []
+
+        for p in points:
+
+            # Define the point on the elliptic curve and calculate the order
+            P = EllipticCurvePoint(self,p[0],p[1])
+            order = P.PointOrder()
+
+            # Place in list; depending on whether element of this order
+            # had been found previously.
+            first_element = True
+
+            for i in range(0,len(cyclic_subgroups)):
+                if cyclic_subgroups[i][0] == order:
+                    first_element = False
+                    cyclic_subgroups[i][1].append(P)
+
+            if first_element == True:
+                cyclic_subgroups.append([order,[P]])
+
+        return cyclic_subgroups
+
+
+
+
+
+    @staticmethod
+    def PointAddition(P,Q):
+
+        """
+            Input: P,Q as instances of EllipticCurvePoint.
+            Output: P + Q as an instance of EllipticCurvePoint.
+
+        """
+
+        if not P.ec == Q.ec:
+            return "These points are on different curves!"
+        else:
+            pass
+
+        # First consider the case the points are equal.
+        if (P.x == Q.x) and (P.y == Q.y):
+            return P.PointDouble()
+
+        # Next we deal with the case P = - Q
+        elif (P.x == Q.x) and ((P.y == P.prime - Q.y) or (Q.y == P.prime - P.y)):
+            return float('inf')
+
+        # If they aren't equal and aren't inverses of each other then we just add them
+        else:
+
+            # We need some parameters for the addition formulae:
+            D = euclid_modular_inverse(Q.x - P.x, Q.prime)
+            s = (D*(Q.y - P.y)) % Q.prime
+
+            x_sum = ((s**2) - P.x - Q.x) % P.prime
+            y_sum = (s*(P.x - x_sum) - P.y) % P.prime
+
+            return EllipticCurvePoint(P.ec,x_sum,y_sum)
+
+
+
+
+    def CurveData(self):
+
+        """
+            This method presents all of the data about the elliptic curve
+            in a human-reader friendly form.
+
+            What else should I say?
+                    - Isomorphism class of the group.
+                    - This many elements of that order.
+
+        """
+
+        print "\n\nThe elliptic curve defined by:\n"
+        print "       E: y^2 = x^3 + %dx + %d mod %d\n" % (self.a,self.b,self.p)
+        print "is a finite Abelian group of order %d.\n" % self.GroupOrder()
+
+        g = E.Generator()
+        if g == None:
+            print "The group E is not cyclic."
+        else:
+            print "The point (%d,%d) has order %d and hence generates E.\n" % (g.x,g.y,self.GroupOrder())
+            print "From this we may conclude that E is isomorphic to: Z/%dZ" % self.GroupOrder()
+
+        element_order_data = self.CyclicSubGroups()
+        L = len(element_order_data)
+        print "\nE has elements of the following orders: \n"
+        for i in range(0,L):
+            order = element_order_data[i][0]
+            number_elements = len(element_order_data[i][1])
+            print "There are %d elements of order %d" % (number_elements,order)
+
+        return ''
+
+class EllipticCurvePoint:
+
+
+    """
+        An instance of this class is a point on an elliptic curve.
+
+        An instance is determined by:
+
+            * an elliptic curve (i.e. instance of Class EllipticCurve)
+
+            * the coordinates of the point given as (x,y)
+
+    """
+
+    # Define the data required to create an instance of this class.
+    def __init__(self,ellipticcurve,x,y):
+
+        self.ec = ellipticcurve
+        self.x = x
+        self.y = y
+        self.prime = ellipticcurve.p
+        self.a = ellipticcurve.a
+        self.b = ellipticcurve.b
+
+    def PointDouble(self):
+
+        """
+            Input: a point, P, on an elliptic curve E
+            Output: the point 2P on the elliptic curve E
+
+        """
+
+        # Points with P(y) = 0 have order two.
+        if self.y == 0:
+            return float("inf")
+        else:
+            pass
+
+        D = euclid_modular_inverse(2*self.y,self.prime)
+        s = (D*(3*(self.x ** 2) + self.a)) % self.prime
+
+        x_sum = ((s**2) - 2*self.x) % self.prime
+        y_sum = (s*(self.x - x_sum) - self.y) % self.prime
+
+        return EllipticCurvePoint(self.ec,x_sum,y_sum)
+
+
+    def PointOrder(self):
+
+        """
+            Calculate the order of a point P on an elliptic curve
+            by adding it to itself until the point at infinity is
+            returned.
+
+        """
+        E = self.ec
+        P = self
+        P_fixed = self
+        infinity = False
+
+        count = 1
+
+        while infinity == False:
+
+            # Option: Print the sums as they are calculated.
+            #print '%dP = (%d,%d)' % (count, P.x, P.y)
+
+            P = E.PointAddition(P,P_fixed)
+
+            if P == float("inf"):
+                count = count + 1
+                return count
+            else:
+                count = count + 1
+
+
+E = EllipticCurve(1,1,101)
+P = EllipticCurvePoint(E,6,18)
+print P.PointOrder()
