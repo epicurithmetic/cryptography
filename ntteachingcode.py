@@ -1919,7 +1919,8 @@ class EllipticCurvePoint:
 
         Things to add:
 
-            - A method which returns the inverse of the point. 
+            - A method which returns the inverse of the point.
+            - A method which prints the point as a string/tuple/list(?)
 
     """
 
