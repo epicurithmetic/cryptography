@@ -1624,6 +1624,8 @@ class EllipticCurve:
             - E = EllipticCurve(0,-1,457)
             - E = EllipticCurve(-5,8,37)
             - E = EllipticCurve(-5,2,11)
+            - E = EllipticCurve(133,811,929)
+
 
 
     """
@@ -1984,6 +1986,3 @@ class EllipticCurvePoint:
                 return count
             else:
                 count = count + 1
-
-E = EllipticCurve(-5,2,11)
-E.CurveData()
