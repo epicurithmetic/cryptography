@@ -1620,7 +1620,7 @@ class EllipticCurve:
 
         Examples:
 
-            - E = EllipticCurve(0,-1,229) 
+            - E = EllipticCurve(0,-1,229)
             - E = EllipticCurve(0,-1,457)
             - E = EllipticCurve(-5,8,37)
             - E = EllipticCurve(-5,2,11)
@@ -1916,6 +1916,10 @@ class EllipticCurvePoint:
             * an elliptic curve (i.e. instance of Class EllipticCurve)
 
             * the coordinates of the point given as (x,y)
+
+        Things to add:
+
+            - A method which returns the inverse of the point. 
 
     """
 
