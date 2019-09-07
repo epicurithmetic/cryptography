@@ -1871,6 +1871,7 @@ class EllipticCurve:
                     - j-invariant
                     - determinant
                     - Is it CM?
+                    - add prompt for list of all points on curve
 
         """
         if self.singular == True:
