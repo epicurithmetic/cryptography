@@ -219,7 +219,7 @@ for i in range(0,key_size):
 XOR_key = ''
 for block in transposed_blocks:
     XOR_key += one_character_letterfreq_XOR_decipher(block)
-print XOR_key
+#print XOR_key
 
 # ---------------------------------
 #  Step 3c: Decrpyt the .txt file!

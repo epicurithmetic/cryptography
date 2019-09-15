@@ -1,4 +1,5 @@
 # Number theory related functions.
+import timeit
 
 # ---------------------------------------------------------------------------
 #                Primes, Primality Testing, and Factorisation
@@ -74,6 +75,35 @@ def newton_sqrt(x):
         x_initial = x_new
 
     return x_initial
+
+# Faster(?) Implementation of SoE.
+# def sieve_eratosthenes_faster(n):
+#
+#   primes = range(2,n+1)
+#
+#   count = 0
+#
+#   while count < newton_sqrt(n):
+#     for x in primes:
+#       if primes[count] == x:
+#         pass
+#       elif (x%primes[count]==0):
+#         primes.remove(x)
+#       else:
+#         pass
+#     count +=1
+#   return primes
+#
+# start = timeit.default_timer()
+# sieve_eratosthenes_faster(1000000)
+# stop = timeit.default_timer()
+# print stop - start
+#
+#
+# start = timeit.default_timer()
+# sieve_eratosthenes(1000000)
+# stop = timeit.default_timer()
+# print stop - start
 
 # Now that we can calculate squareroots, we can write a primality test.
 def isit_prime(n):
@@ -215,8 +245,11 @@ def prime_factorisation(n):
     for i,j in zip(prime_divisor_list,exponents):
         prime_factorisation += ('%s^%s x ' % (str(i),str(j)))
 
-    print '\n'
+    #print '\n'
     return ('%s = ' % str(n)) + prime_factorisation[:-3]
+
+
+
 
 # ---------------------------------------------------------------------------
 #                          Euclidean Algorithm
@@ -293,7 +326,7 @@ def extended_euclid_gcd(a,b):
     print "Bezout coefficients: ", (old_s, old_t)
     print "[%s]*%s + [%s]*%s = gcd(%s,%s) = %s" % (old_s,a,old_t,b,a,b,old_r)
     print "Greatest common divisor: ", old_r
-    return "What more could you want?"
+    return old_s, old_t
 
 # ... with the extended Euclidean algorithm implemented we can now calculate
 # inverses in modular arithmetic.
@@ -303,7 +336,7 @@ def euclid_modular_inverse(a,p):
         Input: Integers a,p (Type, int)
         Output: Inverse of a mod p. (Type, int).
 
-        Note: This code assumes a < p and that the inverse exists. Not the
+        Note: This code assumes a < p and that the inverse exists. Note the
         function will return "None" if a is not invertible mod p.
 
         Note: This function employs the extended Euclidean algorithm to find
@@ -343,7 +376,7 @@ def euclid_modular_inverse(a,p):
         print "%s not invertible mod %s" % (a,p)
         return None
 
-
+#print extended_euclid_gcd(17,47)
 # ---------------------------------------------------------------------------
 #                          Base Change Functions
 # ---------------------------------------------------------------------------
@@ -380,6 +413,7 @@ def decimal_to_binary(integer):
     binaryrep = ''
 
     max = max_power_two(integer)
+    print max
 
     for i in range(max,-1,-1):
 

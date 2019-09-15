@@ -176,7 +176,7 @@ def binary_XOR(binary_string1, binary_string2):
         string which is the bitwise XOR ('exclusive or') of the two input strings
 
         s | t | s XOR t
-        ----- | --------        This differs from 'or' in the first column
+        ----- | --------        This differs from 'or' in the first row
         1 | 1 |    0            where both being true returns false, rather
         1 | 0 |    1            than true. Hence EXCLUSIVE-or.
         0 | 1 |    1
@@ -372,13 +372,10 @@ def XOR_encryption(plaintext, key):
     # to make sure we repeat the key the correct number of times.
     repeat = l_plaintext / l_key
     buff = l_plaintext % l_key
-    key = key * repeat
-    for i in range(0,buff):
-        key.append(key[i])
-    key = [ord(x) for x in key]
+    repeated_key = key*repeat + key[0:buff]
 
     # With the key the appropiate length, we can now XOR the plaintext with key.
-    ciphertext_ASCII = [x^y for x,y in zip(plaintext,key)]
+    ciphertext_ASCII = [x^y for x,y in zip(plaintext,repeated_key)]
     ciphertext_binary = [decimal_to_binary(x) for x in ciphertext_ASCII]
 
     # Something needs to be done...
@@ -1257,4 +1254,4 @@ def caesar_break(cipher_text):
 #         for the plaintext is significantly different with the correct key.
 #         Nothing else comes close. In the smaller example, the text is
 #         still recovered, even though the difference in score is not very
-#         very significant. This may not work with small messages.
+#         very significant.
