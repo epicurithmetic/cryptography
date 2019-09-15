@@ -579,6 +579,98 @@ def one_character_letterfreq_XOR_decipher(cipher_text_bytes):
 
     return max_score_key
 
+
+
+# Even better is a function which takes a string and measures the difference
+# between the frequency of the string and the expected frequency of the
+# english language.
+def isit_english(string):
+
+    '''
+        Measures frequency of letters in string, compares them to expected
+        frequency of the english language.
+
+
+    '''
+
+    # This dictionary stores the expected frequencies of the letters of
+    # the english language.
+    expected = {'e': 0.1202, 't': 0.0910, 'a': 0.0812, 'o': 0.0768,
+                          'i': 0.0731, 'n': 0.0695, 's': 0.0628, 'r': 0.0602,
+                          'h': 0.0592, 'd': 0.0432, ' ': 0.2918,
+                          'l': 0.0398, 'u': 0.0288, 'c': 0.0271, 'm': 0.0261,
+                          'f': 0.0230, 'y': 0.0211, 'w': 0.0209, 'g': 0.0203,
+                          'p': 0.0182, 'b': 0.0149, 'v': 0.0111, 'k': 0.0069,
+                          'x': 0.0017, 'q': 0.0011, 'j': 0.0010, 'z': 0.0007,
+                          'E': 0.1202, 'T': 0.0910, 'A': 0.0812, 'O': 0.0768,
+                          'I': 0.0731, 'N': 0.0695, 'S': 0.0628, 'R': 0.0602,
+                          'H': 0.0592, 'D': 0.0432,
+                          'L': 0.0398, 'U': 0.0288, 'C': 0.0271, 'M': 0.0261,
+                          'F': 0.0230, 'Y': 0.0211, 'W': 0.0209, 'G': 0.0203,
+                          'P': 0.0182, 'B': 0.0149, 'V': 0.0111, 'K': 0.0069,
+                          'X': 0.0017, 'Q': 0.0011, 'J': 0.0010, 'Z': 0.0007}
+
+
+    # Alphabet
+    alphabet = ['e','t','a','o','i','n','s','r','h','d','l','u','c','m',
+                  'f', 'y', 'w', 'g','p', 'b', 'v', 'k','x','q','j','z']
+
+    # Now we need to measure the frequency of the string.
+    L = len(string)
+
+    # Store the measured frequncies.
+    measured = {}
+
+    # Measure the frequencies of the string.
+    for letter in alphabet:
+
+        count = 0
+
+        # Count the instances of letter.
+        for i in range(0,L):
+            if (string[i] == letter) or (string[i] == letter.upper()):
+                count += 1
+            else:
+                pass
+
+        # Calculate frequency of letter.
+        letter_measure = count / float(L)
+
+        # Appened the measured values.
+        measured[letter] = letter_measure
+
+    # With the relative frequencies measured, we need to score the string
+    # depending upon it's  "Englishness" ...
+    score = 0
+
+    for letter in alphabet:
+
+        score += (expected[letter] ** 2) - (measured[letter] ** 2)
+
+    # This scoring method says an string is "more english" than another
+    # string if the score is closer to 0.
+
+    return score
+
+x = 'This cipher is the most widely used symmetric-cipher. It is applied by the USgovernment to encrypt SECRET and TOP-SECRET data. As of May 2009 the only'
+print isit_english(x)
+print isit_english('fuck a duck a')
+print isit_english('asdjfkhnwlar23')
+
+
+
+# government to encrypt SECRET and TOP-SECRET data. As of May 2009 the only
+# attacks against AES have been side channel attacks. That is, attacks which
+# have used flaws in the implementation, rather than flaws in the algorithm
+# itself. Nothing better than brute-force has been (publically) done.
+
+
+
+
+
+
+
+
 # ---------------------------------------------------------------------------
 #                   Advanced Encryption Standard (AES)
 # ---------------------------------------------------------------------------
@@ -1159,7 +1251,7 @@ def caesar_break(cipher_text):
     return plaintext,min_score_key
 
 # Example:
-print caesar_break(test_long_ciphertext)
+#print caesar_break(test_long_ciphertext)
 
 # Notice: with the length of the poem by Dyaln Thomas, the frequency score
 #         for the plaintext is significantly different with the correct key.
