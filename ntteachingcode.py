@@ -1,6 +1,10 @@
 # Example code for Math3301/6114
 import timeit
 
+# Currently trying to move this from Python2 to Python3. However, this seems to
+# introduce a lot of syntax errors. Some sections of the code may not work
+# as a result.
+
 # These are just examples of how you can do these exercises. I make no
 # claim that these are efficient in any sense. I would appreciate any tips
 # to make these functions more efficient!
@@ -459,7 +463,7 @@ def extended_euclid_gcd(a,b):
     old_r = a
 
     while (not (r == 0)):
-        q = old_r / r
+        q = old_r // r
         (old_r,r) = (r, old_r - q*r)
         (old_s,s) = (s, old_s - q*s)
         (old_t,t) = (t, old_t - q*t)
@@ -664,7 +668,7 @@ def euclid_modular_inverse(a,p):
     old_r = a       # old_r is the greatest common divisor of a,p
 
     while (not (r == 0)):
-        q = old_r / r
+        q = old_r // r
         (old_r,r) = (r, old_r - q*r)
         (old_s,s) = (s, old_s - q*s)
         (old_t,t) = (t, old_t - q*t)
@@ -1663,7 +1667,7 @@ class EllipticCurve:
         points = [float('inf')]
 
         # Set range of values to check.         # We can use the symmetry of
-        y_range = ((self.p - 1)/2) + 1          # of the curve to cut-down on
+        y_range = ((self.p - 1)//2) + 1         # of the curve to cut-down on
                                                 # the search.
 
         # Brute force search for points on the elliptic curve.
@@ -2007,10 +2011,3 @@ class EllipticCurvePoint:
         """
 
         return "(%d,%d)" % (self.x, self.y)
-
-E = EllipticCurve(2,2,17)
-P = EllipticCurvePoint(E,9,1)
-minus_P = P.PointInverse()
-print(minus_P.x)
-print(minus_P.y)
-print(minus_P.PointPrint())
