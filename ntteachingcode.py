@@ -1795,6 +1795,12 @@ class EllipticCurve:
             on the elliptic curve by considering the elements
             of the individual points.
 
+            Unsurprisingly, this method takes a long time to run.
+            Over the prime p = 4973; it didn't take long to find
+            the order of the group, nor to determine the group is
+            cyclic. But it did take a minute or so to find the
+            order of all elements in the group.
+
         """
 
         points = self.Points()[1:]
@@ -1873,6 +1879,10 @@ class EllipticCurve:
                     - determinant
                     - Is it CM?
                     - add prompt for list of all points on curve
+
+            This function performs a lot of work multiple times.
+            So this can easily be made more efficient by doing the
+            work once!
 
         """
         if self.singular == True:
