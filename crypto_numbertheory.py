@@ -323,9 +323,9 @@ def extended_euclid_gcd(a,b):
         (old_t,t) = (t, old_t - q*t)
 
 
-    print "Bezout coefficients: ", (old_s, old_t)
-    print "[%s]*%s + [%s]*%s = gcd(%s,%s) = %s" % (old_s,a,old_t,b,a,b,old_r)
-    print "Greatest common divisor: ", old_r
+    print("Bezout coefficients: ", (old_s, old_t))
+    print("[%s]*%s + [%s]*%s = gcd(%s,%s) = %s" % (old_s,a,old_t,b,a,b,old_r))
+    print("Greatest common divisor: ", old_r)
     return old_s, old_t
 
 # ... with the extended Euclidean algorithm implemented we can now calculate
@@ -373,7 +373,7 @@ def euclid_modular_inverse(a,p):
     if old_r == 1:
         return old_s
     else:
-        print "%s not invertible mod %s" % (a,p)
+        print("%s not invertible mod %s" % (a,p))
         return None
 
 #print extended_euclid_gcd(17,47)
@@ -413,7 +413,7 @@ def decimal_to_binary(integer):
     binaryrep = ''
 
     max = max_power_two(integer)
-    print max
+    print(max)
 
     for i in range(max,-1,-1):
 
@@ -1047,7 +1047,7 @@ def GF2_polynomial_remainder(dividend,divisor):
     # Edge cases to deal with: divisor = 0,1.
     # You can't divide by 0!
     if divisor == '0':
-        print "You just divided by 0. You blew up the universe. Good job."
+        print("You just divided by 0. You blew up the universe. Good job.")
         return None
     # Since the length of the divisor does not change, I have to deal with
     # the case the divisor = 1 apart from the other cases.
@@ -1095,7 +1095,7 @@ def GF2_polynomial_quotient(dividend,divisor):
     # Edge cases to deal with: divisor = 0,1.
     # You can't divide by 0!
     if divisor == '0':
-        print "You just divided by 0. You blew up the universe. Good job."
+        print("You just divided by 0. You blew up the universe. Good job.")
         return None
     # Since the length of the divisor does not change, I have to deal with
     # the case the divisor = 1 apart from the other cases.
@@ -1226,9 +1226,9 @@ def GF2_extended_euclid_gcd(poly1, poly2):
         (old_t,t) = (t, GF2_polynomial_sum(old_t,GF2_polynomial_product(q,t)) )
 
 
-    print "Bezout coefficients: ", (old_s, old_t)
-    print "[%s]*%s + [%s]*%s = gcd(%s,%s) = %s" % (old_s,poly1,old_t,poly2,poly1,poly2,old_r)
-    print "Greatest common divisor: ", old_r
+    print("Bezout coefficients: ", (old_s, old_t))
+    print("[%s]*%s + [%s]*%s = gcd(%s,%s) = %s" % (old_s,poly1,old_t,poly2,poly1,poly2,old_r))
+    print("Greatest common divisor: ", old_r)
     return "What more could you want?"
 
 # With the EEA written, we can now calculate inverses in GF(256)

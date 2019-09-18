@@ -116,8 +116,50 @@ def hex_to_bytes(hex_string):
 
     return binary_to_bytes((hex_to_binary(hex_string)))
 
+
 # ---------------------------------------------------------------------------
-#                           Hamming Distance
+#                                  Padding
+# ---------------------------------------------------------------------------
+
+def padding_pkcs7(string,blocksize):
+
+    """
+        This function pads a message to a specified size by appending
+        entire bytes (i.e. two digit hexadecimal) until the required blocksize
+        is obtain.
+
+        Due to the way PKCS#7 is specifed, this seems to only make sense
+        if the number of bytes to be added is at most 255 = FF. Otherwise
+        the hexadecimal representation would be larger than two-bytes. 
+
+    """
+
+    pad_size = blocksize - len(string)
+    pad = '0'
+
+
+    if pad_size < 0:
+        print("String length longer than the required block length.")
+        return string
+    elif pad_size < 10:
+        pad += str(pad_size)
+    elif pad_size < 16:
+        pad += decimal_to_hex(pad_size)
+    else:
+        pad = decimal_to_hex(pad_size)
+
+    string_padded = string
+    i = 0
+    for i in range(0,pad_size):
+        string_padded += pad
+        i += 1
+
+
+    return string_padded
+
+print(padding_pkcs7("YELLOW SUBMARINE",20))
+# ---------------------------------------------------------------------------
+#                              Hamming Distance
 # ---------------------------------------------------------------------------
 
 # This function calculates the hamming distance of two plaintexts (type str).
@@ -529,7 +571,7 @@ def one_character_XOR_search_decipher(cipher_text):
             for x in plain_text_candidate:
                 readable_message += chr(x)
 
-            print "Key is: %s \nPlaintext is: %s\n" % (key,readable_message)
+            print("Key is: %s \nPlaintext is: %s\n" % (key,readable_message))
 
 
             return True
@@ -650,9 +692,9 @@ def isit_english(string):
     return score
 
 x = 'This cipher is the most widely used symmetric-cipher. It is applied by the USgovernment to encrypt SECRET and TOP-SECRET data. As of May 2009 the only'
-print isit_english(x)
-print isit_english('fuck a duck a')
-print isit_english('asdjfkhnwlar23')
+print(isit_english(x))
+print(isit_english('fuck a duck a'))
+print(isit_english('asdjfkhnwlar23'))
 
 
 
@@ -818,7 +860,7 @@ def GF2_matrix_multiply_column(matrix,column):
     m = len(matrix[0])
 
     if not n == m:
-        print 'Dimensions do not match.'
+        print('Dimensions do not match.')
         return None
 
     output = []
@@ -1005,7 +1047,7 @@ def GF256_matrix_multiply_column(matrix,column):
     m = len(matrix[0])
 
     if not n == m:
-        print 'Dimensions do not match.'
+        print('Dimensions do not match.')
         return None
 
     output = []
@@ -1237,7 +1279,7 @@ def caesar_break(cipher_text):
     for k in range(0,27):
         k_plaintext = caesar_cipher(cipher_text,k,'d')
         score = letter_frequency_score(k_plaintext)
-        print score
+        print(score)
         if score < min_score:
             min_score = score
             min_score_key = k
