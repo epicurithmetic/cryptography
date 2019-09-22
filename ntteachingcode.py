@@ -1,5 +1,6 @@
 # Example code for Math3301/6114
 import timeit
+import matplotlib.pyplot as plt
 
 # Currently trying to move this from Python2 to Python3. However, this seems to
 # introduce a lot of syntax errors. Some sections of the code may not work
@@ -1599,6 +1600,116 @@ def random_prime_generator():
             prime = True
     print(count)
     return seed
+
+# ----------------------------------------
+# Exercise Sheet 8: Primitive Roots mod p
+# ----------------------------------------
+
+def primitive_root(prime):
+
+    """
+        This function returns the least primitive root
+        modulo the input prime number. Make sure the
+        input is prime.
+
+        This algorithm relies on the ability to factor
+        phi(p) = p-1. Therefore it will become in effective
+        if the prime becomes too large.
+
+        Note: for some reason this does not interact
+              well with the miller_rabin test.
+              The prime_divisors function needs a primality
+              test; it doesn't like my implementation of
+              Miller-Rabin.
+
+        Note: the output is a generator for the group of
+              multiplicative units modulo the input prime.
+
+    """
+
+    # Edge case
+    if prime == 2:
+        return 1
+
+    # Euler totient.
+    phi = prime - 1
+
+    # Prime divisors of phi(p) = p-1
+    prime_divisor_list = prime_divisors(phi)
+
+    # Exponents to test.
+    exponents = []
+    for p in prime_divisor_list:
+        e = (phi/p)
+        exponents.append(e)
+    L = len(exponents)
+
+    # Test 2 first
+    a = 2
+    # and then increment until primitive found
+    primitive_found = False
+
+    # Note: Gauss proved this while-loop will stop!
+    while primitive_found == False:
+
+        # Don't yet know a is NOT primitive...
+        a_primitive = True
+        i=0
+        while (a_primitive == True) and (i < L):
+
+            # Test the exponents
+            for e in exponents:
+
+                # Calculate the test integer
+                test = binary_exponentiation(a,e,prime)
+
+
+                if test == 1:
+                    a_primitive = False
+                    # In this case, we can break out of the for-loop
+                    break
+
+                i+= 1
+
+
+        if a_primitive == True:
+            primitive_found = True
+        else:
+            a = a + 1
+
+    # Return the current a
+    return a
+
+
+# Plot phi(x)/x to get a sense of the asymptotic behaviour of the density of
+# primitive roots.
+
+# start = timeit.default_timer()
+# x = sieve_eratosthenes(100000)
+#
+# def phi(a):
+#     b=a-1
+#     c=0
+#     while b:
+#         if not euclid_gcd(a,b)-1:
+#             c+=1
+#         b-=1
+#     return c
+#
+# y = [(phi(i-1)/float(i-1)) for i in x]
+# finish = timeit.default_timer()
+# print int(finish - start)
+#
+# plt.title("Ratio of primitive roots mod p: phi(p-1)/(p-1)")
+# plt.ylabel("phi(p-1)/(p-1)")
+# plt.xlabel("p: prime")
+# plt.plot(x,y, 'o')
+# plt.ylim((0,1))
+# plt.xlim((-0.5,100000))
+# plt.show()
+
+
+
 
 
 

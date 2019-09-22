@@ -1,6 +1,7 @@
 # Cryptography related functions.
 from crypto_numbertheory import *
 
+
 # ---------------------------------------------------------------------------
 #                       Bits n Bytes of Information
 # ---------------------------------------------------------------------------
@@ -130,7 +131,7 @@ def padding_pkcs7(string,blocksize):
 
         Due to the way PKCS#7 is specifed, this seems to only make sense
         if the number of bytes to be added is at most 255 = FF. Otherwise
-        the hexadecimal representation would be larger than two-bytes. 
+        the hexadecimal representation would be larger than two-bytes.
 
     """
 
