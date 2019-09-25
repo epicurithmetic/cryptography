@@ -1601,10 +1601,13 @@ def random_prime_generator():
     print(count)
     return seed
 
+
+
 # ----------------------------------------
 # Exercise Sheet 8: Primitive Roots mod p
 # ----------------------------------------
 
+# Exercise 1: Primitive Roots
 def primitive_root(prime):
 
     """
@@ -1708,10 +1711,91 @@ def primitive_root(prime):
 # plt.xlim((-0.5,100000))
 # plt.show()
 
+# Exercise 3: Calculate the order of a mod p
+def order(a,p):
+
+    count = 1
+    a_new = a
+
+    order_obtained = False
+
+    while order_obtained == False:
+
+        if a_new == 1:
+            order_obtained = True
+        else:
+            a_new = (a_new * a) % p
+            count = count + 1
+
+    return count
+
+# for i in range(1,7):
+#     print i,order(i,7)
+
+# Exercise 2: Calculate the index of an integer modulo a prime.
+def discrete_logarithm(a,p,*g):
 
 
+    """
+        This function returns the smallest integer x which solves the
+        equation:
+
+                    r**x == a mod p
+
+        where is a primitive root modulo p.
+
+        The third argument is optional. If the user wants to pick the primitive
+        root with which to calculate the discrete logarithm, then they can
+        provide it in the optional third argument. If no primitive root
+        is passed, then the least positive root is used to calculate the
+        discrete logarithm.
+
+    """
+
+    # Make sure a is represented by the unique positive integer
+    # less than p in the congruence class
+    a = a % p
+
+    # Check which primitive root we are using.
+    r = primitive_root(p)
+    r_new = r
+
+    # If no argument is passed, use the least positive primitive root...
+    if g == ():
+        pass
+    # ... if the least positive primitive root is passed, use that...
+    elif g[0] == r:
+        pass
+    # ... if a primitive root is passed, we can use that...
+    elif (order(g[0],p) == p-1):
+        r = g[0]
+        r_new = g[0]
+    # ... Otherwise, not sure what to make of 3rd argument. Just use least positive primitive.
+    else:
+        print "The third argument is not a primitive root modulo %d. So we used the least primitive root %d" % (p,r)
 
 
+    # Initialize variables
+    index = 1
+    index_found = False
+
+    # Deal with a = r as an edge case
+    if a == r:
+        return 1
+    else:
+        pass
+
+    while index_found == False:
+
+        r_new = (r*r_new) % p
+
+        if r_new == a:
+            index += 1
+            index_found = True
+        else:
+            index +=1
+
+    return index
 
 # --------------------------------------
 # Exercise Sheet Aleph: Elliptic Curves
