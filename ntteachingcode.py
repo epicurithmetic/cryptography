@@ -1502,6 +1502,10 @@ def affine_cipher_break(ciphertext):
 # Code written as Exercise 0 of Sheet 5.
 
 # Exercise 2: Pseudo-Randon Number Generator.
+
+# Can this idea be used to write a random function for dice? 
+# or coinflip. Try and use many simulations to test.
+
 # This code will implement the Linear Congruential PRNG.
 def lcprng():
 
