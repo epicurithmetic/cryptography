@@ -986,7 +986,7 @@ def fermat_composite_test(n,a):
 
     # Carry on with the test.
     test_integer = pow(a,n-1,n)
-    print(test_integer)
+    #print(test_integer)
 
     if test_integer == 1:
         return 'The integer %d is a base %d pseudoprime. \nFermat Test inconclusive; %d maybe prime or a Fermat-liar.' % (n,a,n)
@@ -1039,7 +1039,7 @@ def miller_composite_test(n,a):
                                         # Speed difference is significant for
                                         # large i.e. > 2^64 integers.
 
-
+        print test_integer
         # Now we to decide whether or not to continue running the test:
         if test_integer == 1:
 
@@ -1308,14 +1308,14 @@ def affine_cipher(plaintext,key,mode):
     b = key[1]
     a_inverse = 1
 
-    # decryption shift
-    c = a_inverse*b
-
     # Check if key is valid:
     if euclid_gcd(a,26) == 1:
         a_inverse = euclid_modular_inverse(a,26)
     else:
         return 'Key is not valid. The first element of the key must be coprime to 26.'
+
+    # decryption shift
+    c = (a_inverse*b) % 26
 
     # Take the plaintext string and turn it into a list:
     plaintext_list = list(plaintext)
@@ -1488,6 +1488,7 @@ def affine_cipher_break(ciphertext):
             if score > max_score:
                 max_score = score
                 max_score_key = key
+                print key[0],key[1]
                 max_score_plaintext = plaintext
             else:
                 pass
@@ -1598,7 +1599,7 @@ def random_prime_generator():
             count += 1
         else:
             prime = True
-    print(count)
+    #print(count)
     return seed
 
 
@@ -1711,7 +1712,7 @@ def primitive_root(prime):
 # plt.xlim((-0.5,100000))
 # plt.show()
 
-# Exercise 3: Calculate the order of a mod p
+# Exercise 2: Calculate the order of a mod p
 def order(a,p):
 
     count = 1
@@ -1732,7 +1733,7 @@ def order(a,p):
 # for i in range(1,7):
 #     print i,order(i,7)
 
-# Exercise 2: Calculate the index of an integer modulo a prime.
+# Exercise 3: Calculate the index of an integer modulo a prime.
 def discrete_logarithm(a,p,*g):
 
 
@@ -1796,6 +1797,33 @@ def discrete_logarithm(a,p,*g):
             index +=1
 
     return index
+
+
+# -------------------------------------
+# Exercise Sheet 9: Quadratic Residues
+# -------------------------------------
+
+# Exercise 1: Compute Legendre symbol.
+def legendre_symbol(a,p):
+
+    """
+        This function uses the identity
+
+                    (a|p) = a**((p-1)/2) mod p
+
+        and binary exponentiation to calculate the Legendre symbol.
+
+    """
+    a = a % p
+    e = ((p-1)/2)
+    symbol = binary_exponentiation(a,e,p)
+
+    if symbol == 1:
+        return 1
+    elif symbol == p-1:
+        return -1
+    else:
+        return "Something went wrong. Sorry."
 
 # --------------------------------------
 # Exercise Sheet Aleph: Elliptic Curves
@@ -2084,7 +2112,7 @@ class EllipticCurve:
             return "This curve is singular and hence not an Elliptic curve."
 
         # Look for a generator.
-        g = E.Generator()
+        g = self.Generator()
 
         print("\n\nThe elliptic curve defined by:\n")
         print("       E: y^2 = x^3 + %dx + %d mod %d\n" % (self.a,self.b,self.p))
@@ -2216,3 +2244,4 @@ class EllipticCurvePoint:
         """
 
         return "(%d,%d)" % (self.x, self.y)
+print sieve_eratosthenes(100)
