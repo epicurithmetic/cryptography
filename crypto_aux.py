@@ -118,6 +118,18 @@ def hex_to_bytes(hex_string):
     return binary_to_bytes((hex_to_binary(hex_string)))
 
 
+def pad_fullbyte(binary_string):
+
+    L = len(binary_string)
+
+    if L == 8:
+        return binary_string
+    else:
+        return (('0')*(8-L) + binary_string)
+
+x = '1110101'
+print(pad_fullbyte(x))
+
 # ---------------------------------------------------------------------------
 #                                  Padding
 # ---------------------------------------------------------------------------
@@ -158,7 +170,7 @@ def padding_pkcs7(string,blocksize):
 
     return string_padded
 
-print(padding_pkcs7("YELLOW SUBMARINE",20))
+#print(padding_pkcs7("YELLOW SUBMARINE",20))
 # ---------------------------------------------------------------------------
 #                              Hamming Distance
 # ---------------------------------------------------------------------------
@@ -692,10 +704,10 @@ def isit_english(string):
 
     return score
 
-x = 'This cipher is the most widely used symmetric-cipher. It is applied by the USgovernment to encrypt SECRET and TOP-SECRET data. As of May 2009 the only'
-print(isit_english(x))
-print(isit_english('fuck a duck a'))
-print(isit_english('asdjfkhnwlar23'))
+# x = 'This cipher is the most widely used symmetric-cipher. It is applied by the USgovernment to encrypt SECRET and TOP-SECRET data. As of May 2009 the only'
+# print(isit_english(x))
+# print(isit_english('fuck a duck a'))
+# print(isit_english('asdjfkhnwlar23'))
 
 
 
@@ -1062,11 +1074,54 @@ def GF256_matrix_multiply_column(matrix,column):
         for j in range(0,n):
             output_entry = GF2_polynomial_sum(output_entry, GF256_multiplication(matrix[i][j],column[j]))
 
+        # Pad to full-byte
+        output_entry = pad_fullbyte(output_entry)
+
+        # Append to output
         output.append(output_entry)
 
     return output
 
-#print GF256_matrix_multiply_column(rijndael_matrix,test_input)
+#print GF256_matrix_multiply_column(rijndael_matrix,test_input) == test_output
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

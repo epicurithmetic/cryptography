@@ -1504,7 +1504,7 @@ def affine_cipher_break(ciphertext):
 
 # Exercise 2: Pseudo-Randon Number Generator.
 
-# Can this idea be used to write a random function for dice? 
+# Can this idea be used to write a random function for dice?
 # or coinflip. Try and use many simulations to test.
 
 # This code will implement the Linear Congruential PRNG.
@@ -2248,4 +2248,9 @@ class EllipticCurvePoint:
         """
 
         return "(%d,%d)" % (self.x, self.y)
-print sieve_eratosthenes(100)
+
+
+
+E = EllipticCurve(0,5,7)
+E.CurveData()
+print(E.Points())
