@@ -9,9 +9,9 @@ At the moment this repository is *unedited/unoptimized stream-of-consciousness* 
 #### What is in this repository
 
 
-This repository contains the code I have written to solve the problems on the Cryptopals website. For the most part I have tried to not use any packages/modules/libraries on top of the Python language. I try to implement all of the protocols and the mathematics needed for them myself; the primary goal is learning to code and learning cryptography, speed and efficiency are not the primary goal *at the moment*.
+This repository contains the code I have written to solve the problems on the Cryptopals website. For the most part I have tried (for what ever reason I had at the time) to not use any packages/modules/libraries on top of the Python language. I try to implement all of the protocols and the mathematics needed for them myself; the primary goal is learning to code and learning cryptography, speed and efficiency are not the primary goal *at the moment*.
 
-This repository now contains the code I used when teaching a first course on Number Theory and Cryptography at the ANU in 2019. This can be found in the file "ntteachingcode.py". This file contains code relating to things like: solving Diophantine equations; finding greatest common divisors; encryption with some basic ciphers; primality tests; and many more number theory related topics.  
+This repository now contains the code I used when teaching a first course on Number Theory and Cryptography at the ANU in 2019. This can be found in the file "ntteachingcode.py". This file contains code relating to things like: solving Diophantine equations; finding greatest common divisors; encryption/decryption (and some breaks) with some basic ciphers; primality tests; and many more number theory related topics.  
 
 ---
 
@@ -49,7 +49,7 @@ Taks for the near future include:
 
 #### Number Theory Topics 
 
-Number theory plays a large part in modern cryptography. Much of the code written in this repository is my way of figuring out how to implement the mathematics required to run the protocols. Topics include: 
+Number theory plays a large part in modern cryptography. Much of the code written in this repository is my way of figuring out how to implement the mathematics required to run the protocols. Topics were also determined by the course I taught. These subjects include: 
 
 - Elementary number theory:
   - Primes and factorisation
@@ -60,6 +60,10 @@ Number theory plays a large part in modern cryptography. Much of the code writte
   - Extensions of GF(2): multiplication and inverses
 - Linear algebra over fintite fields:
   - Matrix arithmetic
+- Arithmetic mod p
+  - Linear congruences
+  - Discrete logarithms
+  - Quadratic residues (Legendre symbol)
 
 
 
