@@ -607,7 +607,7 @@ def XOR_cipher(plaintext, key):
 
     # Since the key length may not divide the length of the plaintext, we have
     # to make sure we repeat the key the correct number of times.
-    repeat = l_plaintext / l_key
+    repeat = l_plaintext // l_key
     buff = l_plaintext % l_key
     repeated_key = key*repeat + key[0:buff]
 
@@ -633,6 +633,7 @@ def XOR_cipher(plaintext, key):
 
     return ciphertext
 
+print(XOR_cipher("Robert","Culling"))
 # ------------------
 # Exercise Sheet 4:
 # ------------------
@@ -1039,7 +1040,7 @@ def miller_composite_test(n,a):
                                         # Speed difference is significant for
                                         # large i.e. > 2^64 integers.
 
-        print test_integer
+        #print(test_integer)
         # Now we to decide whether or not to continue running the test:
         if test_integer == 1:
 
@@ -1488,7 +1489,7 @@ def affine_cipher_break(ciphertext):
             if score > max_score:
                 max_score = score
                 max_score_key = key
-                print key[0],key[1]
+                #print( key[0],key[1])
                 max_score_plaintext = plaintext
             else:
                 pass
@@ -1605,8 +1606,6 @@ def random_prime_generator():
             prime = True
     #print(count)
     return seed
-
-
 
 # ----------------------------------------
 # Exercise Sheet 8: Primitive Roots mod p
@@ -1777,7 +1776,7 @@ def discrete_logarithm(a,p,*g):
         r_new = g[0]
     # ... Otherwise, not sure what to make of 3rd argument. Just use least positive primitive.
     else:
-        print "The third argument is not a primitive root modulo %d. So we used the least primitive root %d" % (p,r)
+        print("The third argument is not a primitive root modulo %d. So we used the least primitive root %d" % (p,r))
 
 
     # Initialize variables
@@ -2250,7 +2249,7 @@ class EllipticCurvePoint:
         return "(%d,%d)" % (self.x, self.y)
 
 
-
-E = EllipticCurve(0,5,7)
-E.CurveData()
-print(E.Points())
+#
+# E = EllipticCurve(0,5,7)
+# E.CurveData()
+# print(E.Points())
