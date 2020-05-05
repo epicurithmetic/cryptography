@@ -1,2 +1,9 @@
 .pyc
 *.pyc
+cpals14.txt
+cpals16.txt
+cpals18.txt
+cryptopals1.py
+cryptopals2.py
+pollard.py
+dice.py
