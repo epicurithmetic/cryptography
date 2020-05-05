@@ -1,9 +1,9 @@
 .pyc
 *.pyc
-cpals14.txt
-cpals16.txt
-cpals18.txt
+.txt
+*.txt
 cryptopals1.py
 cryptopals2.py
+cryptopals16.py
 pollard.py
 dice.py
